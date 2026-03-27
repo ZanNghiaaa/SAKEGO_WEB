@@ -5,6 +5,9 @@ const checkDatabase = async () => {
     const conn = await mongoose.connect('mongodb://127.0.0.1:27017/sakego');
     console.log('✅ Kết nối thành công đến database:', conn.connection.name);
     
+
+
+    
     // Lấy danh sách collections
     const collections = await conn.connection.db.listCollections().toArray();
     console.log('\n📋 Các collection trong database sakego:');
