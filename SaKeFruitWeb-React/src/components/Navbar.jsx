@@ -87,7 +87,7 @@ const Navbar = () => {
         <div className="container">
           <div className="logo">
             <Link to="/">
-              <img src="/assets/images/logo_6.png" alt="SaKeFruit Logo" />
+              <img src="/assets/images/logo_end.png" alt="SaKeFruit Logo" />
             </Link>
           </div>
           <div className="header-actions">
@@ -206,7 +206,7 @@ const Navbar = () => {
                 ></div>
                 <div className="combined-menu-dropdown">
                   <div className="combined-menu-header">
-                    <img src="/assets/images/logo_6.png" alt="Logo" />
+                    <img src="/assets/images/logo.png" alt="Logo" />
                     <span>SAKEFRUIT</span>
                     <button onClick={() => setShowCombinedMenu(false)}>
                       <i className="fas fa-times"></i>

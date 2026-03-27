@@ -246,11 +246,11 @@ const Contact = () => {
                 <h3><i className="fas fa-question-circle"></i> Câu hỏi thường gặp</h3>
                 <div className="faq-item">
                   <h4>Thời gian giao hàng?</h4>
-                  <p>Đơn hàng sẽ được giao trong 2-3 ngày làm việc tại khu vực nội thành.</p>
+                  <p>Đơn hàng sẽ được giao trong 4 giờ làm việc tại khu vực nội thành.</p>
                 </div>
                 <div className="faq-item">
                   <h4>Chính sách đổi trả?</h4>
-                  <p>Hỗ trợ đổi trả trong vòng 7 ngày nếu sản phẩm có lỗi từ nhà sản xuất.</p>
+                  <p>Hỗ trợ đổi trả trong vòng 1 ngày nếu sản phẩm có lỗi từ nhà sản xuất.</p>
                 </div>
                 <div className="faq-item">
                   <h4>Phương thức thanh toán?</h4>
@@ -264,10 +264,6 @@ const Contact = () => {
                   <a href="https://www.facebook.com/share/1HzpsrKSFq/?mibextid=wwXIfr" className="social-btn facebook" target="_blank" rel="noopener noreferrer">
                     <i className="fab fa-facebook-f"></i>
                     <span>Facebook</span>
-                  </a>
-                  <a href="#" className="social-btn instagram" target="_blank" rel="noopener noreferrer">
-                    <i className="fab fa-instagram"></i>
-                    <span>Instagram</span>
                   </a>
                   <a href="#" className="social-btn zalo" target="_blank" rel="noopener noreferrer">
                     <i className="fas fa-comments"></i>

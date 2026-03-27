@@ -22,8 +22,8 @@ export const fetchProductsFromAPI = async () => {
     }
     const data = await response.json();
     
-    // Filter only valid categories (tea, rice-milk, mochi)
-    const validCategories = ['tea', 'rice-milk', 'mochi'];
+    // Filter only valid categories (tea, rice-milk, mochi, combo)
+    const validCategories = ['tea', 'rice-milk', 'mochi', 'combo'];
     const filteredProducts = data.products.filter(p => validCategories.includes(p.category));
     
     // Transform API data to match frontend format
@@ -36,7 +36,13 @@ export const fetchProductsFromAPI = async () => {
       category: p.category,
       stock: p.stock,
       isTrial: p.isTrial,
-      isReadyToEat: p.isReadyToEat
+      isReadyToEat: p.isReadyToEat,
+      // Combo-specific fields
+      isCombo: p.isCombo || false,
+      originalPrice: p.originalPrice,
+      discount: p.discount,
+      comboItems: p.comboItems || [],
+      isBestSeller: p.isBestSeller || false
     }));
     
     return productsCache;
@@ -153,15 +159,16 @@ export const getProductCategories = () => {
     all: { name: 'Tất cả', count: products.length },
     tea: { name: 'Trà Sa Kê', count: 0 },
     'rice-milk': { name: 'Sữa Gạo Sa Kê', count: 0 },
-    mochi: { name: 'Bánh Mochi Sa Kê', count: 0 }
+    mochi: { name: 'Bánh Mochi Sa Kê', count: 0 },
+    combo: { name: 'Combo Sa Kê', count: 0 }
   };
-  
+
   products.forEach(p => {
     if (categories[p.category]) {
       categories[p.category].count++;
     }
   });
-  
+
   return categories;
 };
 

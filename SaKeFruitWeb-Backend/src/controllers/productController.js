@@ -82,20 +82,36 @@ export const createProduct = async (req, res, next) => {
 export const updateProduct = async (req, res, next) => {
   try {
     let product = await Product.findById(req.params.id);
-    
+
     if (!product) {
       return res.status(404).json({
         success: false,
         message: 'Sản phẩm không tồn tại!'
       });
     }
-    
+
+    // Sanitize combo fields - nếu không phải combo, xóa các fields combo
+    const updateData = { ...req.body };
+
+    // Nếu request không gửi isCombo hoặc isCombo=false, xóa tất cả combo fields
+    if (!updateData.isCombo || updateData.isCombo === false || updateData.isCombo === 'false') {
+      // Xóa combo fields khỏi update data
+      delete updateData.originalPrice;
+      delete updateData.discount;
+      delete updateData.comboItems;
+      delete updateData.isBestSeller;
+
+      // Set về false để clear trong database
+      updateData.isCombo = false;
+      updateData.isBestSeller = false;
+    }
+
     product = await Product.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true, runValidators: true }
     );
-    
+
     res.json({
       success: true,
       message: 'Cập nhật sản phẩm thành công!',

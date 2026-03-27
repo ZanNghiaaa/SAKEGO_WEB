@@ -37,7 +37,7 @@ const HeroSection = () => {
                 <div className="stat-label">Khách hàng</div>
               </div>
               <div className="stat-item">
-                <div className="stat-number">7</div>
+                <div className="stat-number">3</div>
                 <div className="stat-label">Sản phẩm</div>
               </div>
               <div className="stat-item">
@@ -48,7 +48,7 @@ const HeroSection = () => {
           </div>
           <div className="hero-image">
             <div className="floating-card card-1">
-              <img src="/assets/images/anhbia01.png" alt="Sa Kê" />
+              <img src="/assets/images/anhbia.png" alt="Sa Kê" />
             </div>
             <div className="floating-card card-2">
               <div className="badge-quality">

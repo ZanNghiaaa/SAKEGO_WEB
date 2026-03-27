@@ -1001,6 +1001,58 @@ section h2::after {
     font-size: 0.85rem;
 }
 
+.best-seller-badge {
+    position: absolute;
+    top: 55px;
+    left: 15px;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #333;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    z-index: 2;
+    box-shadow: 0 3px 15px rgba(255, 215, 0, 0.5);
+    animation: pulse 2s infinite;
+}
+
+.combo-discount-badge {
+    position: absolute;
+    top: 55px;
+    right: 15px;
+    background: linear-gradient(135deg, #E91E63, #F06292);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    z-index: 2;
+    box-shadow: 0 3px 15px rgba(233, 30, 99, 0.4);
+    animation: pulse 2s infinite;
+}
+
+.product-price-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.product-price-original {
+    color: #999;
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-decoration: line-through;
+    margin: 0;
+}
+
+.product-price-combo {
+    color: #E91E63;
+    font-weight: 700;
+    font-size: 1.6rem;
+    margin: 0;
+}
+
 @keyframes pulse {
     0%, 100% {
         transform: scale(1);

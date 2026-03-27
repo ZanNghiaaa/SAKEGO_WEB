@@ -22,7 +22,7 @@ const productSchema = new mongoose.Schema({
   category: {
     type: String,
     required: [true, 'Danh mục là bắt buộc'],
-    enum: ['tea', 'rice-milk', 'mochi'],
+    enum: ['tea', 'rice-milk', 'mochi', 'combo'],
     default: 'tea'
   },
   stock: {
@@ -46,6 +46,33 @@ const productSchema = new mongoose.Schema({
   soldCount: {
     type: Number,
     default: 0
+  },
+  // Combo-specific fields
+  isCombo: {
+    type: Boolean,
+    default: false
+  },
+  originalPrice: {
+    type: Number,
+    min: [0, 'Giá gốc không thể âm']
+  },
+  discount: {
+    type: Number,
+    min: [0, 'Giảm giá không thể âm'],
+    max: [100, 'Giảm giá không thể quá 100%']
+  },
+  comboItems: [{
+    itemName: {
+      type: String
+    },
+    quantity: {
+      type: Number,
+      min: [1, 'Số lượng phải lớn hơn 0']
+    }
+  }],
+  isBestSeller: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true
@@ -59,7 +86,8 @@ productSchema.virtual('categoryName').get(function() {
   const categoryNames = {
     'tea': 'Trà Sa Kê',
     'rice-milk': 'Sữa Gạo Sa Kê',
-    'mochi': 'Bánh Mochi Sa Kê'
+    'mochi': 'Bánh Mochi Sa Kê',
+    'combo': 'Combo Sa Kê'
   };
   return categoryNames[this.category] || this.category;
 });

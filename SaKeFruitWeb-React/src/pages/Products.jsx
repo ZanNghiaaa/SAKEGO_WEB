@@ -119,11 +119,17 @@ const Products = () => {
             >
               <i className="fas fa-glass-whiskey"></i> Sữa Gạo Sa Kê
             </button>
-            <button 
+            <button
               className={`filter-btn ${activeFilter === 'mochi' ? 'active' : ''}`}
               onClick={() => handleFilter('mochi')}
             >
               <i className="fas fa-cookie"></i> Bánh Mochi Sa Kê
+            </button>
+            <button
+              className={`filter-btn ${activeFilter === 'combo' ? 'active' : ''}`}
+              onClick={() => handleFilter('combo')}
+            >
+              <i className="fas fa-gift"></i> Combo Sa Kê
             </button>
           </div>
         </div>
@@ -139,7 +145,8 @@ const Products = () => {
               {activeFilter !== 'all' && activeFilter !== 'search' && ` trong danh mục "${
                 activeFilter === 'tea' ? 'Trà Sa Kê' :
                 activeFilter === 'rice-milk' ? 'Sữa Gạo Sa Kê' :
-                activeFilter === 'mochi' ? 'Bánh Mochi Sa Kê' : ''
+                activeFilter === 'mochi' ? 'Bánh Mochi Sa Kê' :
+                activeFilter === 'combo' ? 'Combo Sa Kê' : ''
               }"`}
             </p>
           </div>

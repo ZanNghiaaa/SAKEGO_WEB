@@ -14,7 +14,8 @@ const AdminProducts = () => {
     all: { name: 'Tất cả', count: 0 },
     tea: { name: 'Trà Sa Kê', count: 0 },
     'rice-milk': { name: 'Sữa Gạo Sa Kê', count: 0 },
-    mochi: { name: 'Bánh Mochi Sa Kê', count: 0 }
+    mochi: { name: 'Bánh Mochi Sa Kê', count: 0 },
+    combo: { name: 'Combo Sa Kê', count: 0 }
   });
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -32,7 +33,12 @@ const AdminProducts = () => {
     category: 'tea',
     stock: '',
     isTrial: false,
-    isReadyToEat: true
+    isReadyToEat: true,
+    // Combo fields
+    isCombo: false,
+    originalPrice: '',
+    discount: '',
+    isBestSeller: false
   });
 
   // Load products on mount
@@ -160,7 +166,12 @@ const AdminProducts = () => {
       category: 'tea',
       stock: '',
       isTrial: false,
-      isReadyToEat: true
+      isReadyToEat: true,
+      // Combo fields
+      isCombo: false,
+      originalPrice: '',
+      discount: '',
+      isBestSeller: false
     });
     setShowModal(true);
   };
@@ -178,7 +189,12 @@ const AdminProducts = () => {
       category: product.category,
       stock: product.stock,
       isTrial: product.isTrial,
-      isReadyToEat: product.isReadyToEat
+      isReadyToEat: product.isReadyToEat,
+      // Combo fields
+      isCombo: product.isCombo || false,
+      originalPrice: product.originalPrice || '',
+      discount: product.discount || '',
+      isBestSeller: product.isBestSeller || false
     });
     setShowModal(true);
   };
@@ -186,7 +202,7 @@ const AdminProducts = () => {
   // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       // Upload image first if selected
       let imageUrl = formData.image;
@@ -199,10 +215,28 @@ const AdminProducts = () => {
       }
 
       const productData = {
-        ...formData,
-        image: imageUrl
+        name: formData.name,
+        price: parseFloat(formData.price),
+        image: imageUrl,
+        description: formData.description,
+        category: formData.category,
+        stock: parseInt(formData.stock),
+        isTrial: formData.isTrial,
+        isReadyToEat: formData.isReadyToEat,
+        isCombo: formData.isCombo,
+        isBestSeller: formData.isBestSeller
       };
-      
+
+      // Chỉ thêm combo fields nếu isCombo = true
+      if (formData.isCombo) {
+        if (formData.originalPrice) {
+          productData.originalPrice = parseFloat(formData.originalPrice);
+        }
+        if (formData.discount) {
+          productData.discount = parseFloat(formData.discount);
+        }
+      }
+
       if (editingProduct) {
         // Update existing product
         await updateProduct(editingProduct.id, productData);
@@ -212,7 +246,7 @@ const AdminProducts = () => {
         await addProduct(productData);
         alert('Thêm sản phẩm thành công!');
       }
-      
+
       await refreshProducts();
       setShowModal(false);
       setImageFile(null);
@@ -239,7 +273,8 @@ const AdminProducts = () => {
     const categoryMap = {
       tea: 'Trà Sa Kê',
       'rice-milk': 'Sữa Gạo Sa Kê',
-      mochi: 'Bánh Mochi Sa Kê'
+      mochi: 'Bánh Mochi Sa Kê',
+      combo: 'Combo Sa Kê'
     };
     return categoryMap[category] || category;
   };
@@ -442,7 +477,7 @@ const AdminProducts = () => {
 
                   <div className="form-group">
                     <label>Danh mục <span className="text-danger">*</span></label>
-                    <select 
+                    <select
                       name="category"
                       value={formData.category}
                       onChange={handleInputChange}
@@ -451,6 +486,7 @@ const AdminProducts = () => {
                       <option value="tea">Trà Sa Kê</option>
                       <option value="rice-milk">Sữa Gạo Sa Kê</option>
                       <option value="mochi">Bánh Mochi Sa Kê</option>
+                      <option value="combo">Combo Sa Kê</option>
                     </select>
                   </div>
 
@@ -572,10 +608,10 @@ const AdminProducts = () => {
                   </div>
 
                   <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-                    <div style={{ display: 'flex', gap: '20px' }}>
+                    <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
                       <label className="checkbox-label">
-                        <input 
-                          type="checkbox" 
+                        <input
+                          type="checkbox"
                           name="isReadyToEat"
                           checked={formData.isReadyToEat}
                           onChange={handleInputChange}
@@ -584,16 +620,76 @@ const AdminProducts = () => {
                       </label>
 
                       <label className="checkbox-label">
-                        <input 
-                          type="checkbox" 
+                        <input
+                          type="checkbox"
                           name="isTrial"
                           checked={formData.isTrial}
                           onChange={handleInputChange}
                         />
                         <span>Gói dùng thử</span>
                       </label>
+
+                      <label className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          name="isCombo"
+                          checked={formData.isCombo}
+                          onChange={handleInputChange}
+                        />
+                        <span>🎁 Sản phẩm Combo</span>
+                      </label>
+
+                      {formData.isCombo && (
+                        <label className="checkbox-label">
+                          <input
+                            type="checkbox"
+                            name="isBestSeller"
+                            checked={formData.isBestSeller}
+                            onChange={handleInputChange}
+                          />
+                          <span>⭐ Best Seller</span>
+                        </label>
+                      )}
                     </div>
                   </div>
+
+                  {/* Combo Fields - Only show when isCombo is checked */}
+                  {formData.isCombo && (
+                    <>
+                      <div className="form-group">
+                        <label>Giá gốc (VNĐ)</label>
+                        <input
+                          type="number"
+                          name="originalPrice"
+                          value={formData.originalPrice}
+                          onChange={handleInputChange}
+                          min="0"
+                          step="1000"
+                          placeholder="0"
+                        />
+                        <small style={{ color: '#666', fontSize: '12px' }}>
+                          Giá gốc trước khi giảm (để trống nếu không có)
+                        </small>
+                      </div>
+
+                      <div className="form-group">
+                        <label>Giảm giá (%)</label>
+                        <input
+                          type="number"
+                          name="discount"
+                          value={formData.discount}
+                          onChange={handleInputChange}
+                          min="0"
+                          max="100"
+                          step="0.1"
+                          placeholder="0"
+                        />
+                        <small style={{ color: '#666', fontSize: '12px' }}>
+                          Phần trăm giảm giá (0-100%)
+                        </small>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
 

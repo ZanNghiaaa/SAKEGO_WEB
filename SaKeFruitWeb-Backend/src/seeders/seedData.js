@@ -39,16 +39,6 @@ const users = [
 
 const products = [
   {
-    name: 'Snack SAKEGO Phô Mai',
-    price: 19000,
-    image: '/assets/images/Nền xám.png',
-    description: 'Snack SAKEGO giòn tan, vị phô mai béo ngậy. Sản phẩm ăn liền tiện lợi, thích hợp mọi lúc. Trọng lượng: 60g',
-    category: 'snack',
-    stock: 110,
-    isTrial: false,
-    isReadyToEat: true
-  },
-  {
     name: 'Trà SAKEGO Nguyên Chất',
     price: 17000,
     image: '/assets/images/Trà sake.png',
@@ -59,12 +49,12 @@ const products = [
     isReadyToEat: true
   },
   {
-    name: 'Khô SAKEGO Sấy Khô',
-    price: 29000,
-    image: '/assets/images/khosake.png',
-    description: 'SAKEGO sấy khô giữ nguyên dinh dưỡng. Sản phẩm ăn liền tiện lợi, dễ bảo quản. Trọng lượng: 80g',
-    category: 'dried',
-    stock: 60,
+    name: 'Sữa Gạo Sa Kê Premium',
+    price: 25000,
+    image: '/assets/images/suagaosake.jpg',
+    description: 'Sữa gạo Sa Kê 100% tự nhiên, giàu dinh dưỡng, mềm mịn, béo ngậy. Trọng lượng: 200ml',
+    category: 'rice-milk',
+    stock: 100,
     isTrial: false,
     isReadyToEat: true
   },
@@ -89,16 +79,6 @@ const products = [
     isReadyToEat: true
   },
   {
-    name: 'Bánh Mật SAKEGO',
-    price: 20000,
-    image: '/assets/images/banhmat.png',
-    description: 'Bánh mật SAKEGO thơm ngon, ngọt thanh tự nhiên. Sản phẩm ăn liền tiện lợi cho mọi lứa tuổi. Trọng lượng: 80g',
-    category: 'honey-cake',
-    stock: 90,
-    isTrial: false,
-    isReadyToEat: true
-  },
-  {
     name: 'Combo Sa Kê Đa Dạng',
     price: 180000,
     image: 'https://placehold.co/400x300/5C6BC0/white?text=Combo+Da+Dang',
@@ -107,6 +87,93 @@ const products = [
     stock: 50,
     isTrial: false,
     isReadyToEat: true
+  },
+  {
+    name: 'CHILL MỘT MÌNH',
+    price: 32000,
+    originalPrice: 35000,
+    discount: 8.6,
+    image: 'https://placehold.co/400x300/42A5F5/white?text=CHILL+MOT+MINH',
+    description: 'Combo hoàn hảo cho những phút giây thư giãn một mình. Gồm 1 Sữa gạo Sa Kê mềm mịn, béo ngậy và 1 Mochi thơm ngon. Tùy chọn vị: Lá dứa, Bắp, Nguyên bản.',
+    category: 'combo',
+    stock: 100,
+    isTrial: false,
+    isReadyToEat: true,
+    isCombo: true,
+    comboItems: [
+      { itemName: 'Sữa gạo Sa Kê', quantity: 1 },
+      { itemName: 'Bánh Mochi', quantity: 1 }
+    ]
+  },
+  {
+    name: 'ÍCH KỶ',
+    price: 28000,
+    originalPrice: 30000,
+    discount: 6.7,
+    image: 'https://placehold.co/400x300/66BB6A/white?text=ICH+KY',
+    description: 'Combo nhẹ nhàng cho những ai yêu thích sự tinh tế. Gồm 1 Trà lá Sa Kê thanh mát và 1 Mochi mềm dai. Tùy chọn vị: Lá dứa, Bắp, Nguyên bản.',
+    category: 'combo',
+    stock: 120,
+    isTrial: false,
+    isReadyToEat: true,
+    isCombo: true,
+    comboItems: [
+      { itemName: 'Trà lá Sa Kê', quantity: 1 },
+      { itemName: 'Bánh Mochi', quantity: 1 }
+    ]
+  },
+  {
+    name: 'DOUBLE CHILL',
+    price: 63000,
+    originalPrice: 70000,
+    discount: 10,
+    image: 'https://placehold.co/400x300/FF6B6B/white?text=DOUBLE+CHILL+⭐',
+    description: '🔥 BEST SELLER! Combo gấp đôi niềm vui cho cặp đôi hoặc bạn bè. Gồm 2 Sữa gạo Sa Kê thơm ngon và 2 Mochi mềm mịn. Tiết kiệm 7.000đ! Tùy chọn vị: Lá dứa, Bắp, Nguyên bản.',
+    category: 'combo',
+    stock: 150,
+    isTrial: false,
+    isReadyToEat: true,
+    isCombo: true,
+    isBestSeller: true,
+    comboItems: [
+      { itemName: 'Sữa gạo Sa Kê', quantity: 2 },
+      { itemName: 'Bánh Mochi', quantity: 2 }
+    ]
+  },
+  {
+    name: 'COUPLE CHILL',
+    price: 54000,
+    originalPrice: 60000,
+    discount: 10,
+    image: 'https://placehold.co/400x300/AB47BC/white?text=COUPLE+CHILL',
+    description: 'Combo lý tưởng cho các cặp đôi yêu thích trà. Gồm 2 Trà lá Sa Kê thanh mát và 2 Mochi thơm ngon. Tiết kiệm 6.000đ! Tùy chọn vị: Lá dứa, Bắp, Nguyên bản.',
+    category: 'combo',
+    stock: 130,
+    isTrial: false,
+    isReadyToEat: true,
+    isCombo: true,
+    comboItems: [
+      { itemName: 'Trà lá Sa Kê', quantity: 2 },
+      { itemName: 'Bánh Mochi', quantity: 2 }
+    ]
+  },
+  {
+    name: 'SAKE PARTY',
+    price: 85000,
+    originalPrice: 97000,
+    discount: 12.4,
+    image: 'https://placehold.co/400x300/FFA726/white?text=SAKE+PARTY',
+    description: 'Combo đại tiệc cho nhóm bạn! Gồm 1 Sữa gạo Sa Kê, 1 Trà lá Sa Kê và 4 Mochi đa dạng hương vị. Tiết kiệm 12.000đ! Tùy chọn vị: Lá dứa, Bắp, Nguyên bản.',
+    category: 'combo',
+    stock: 80,
+    isTrial: false,
+    isReadyToEat: true,
+    isCombo: true,
+    comboItems: [
+      { itemName: 'Sữa gạo Sa Kê', quantity: 1 },
+      { itemName: 'Trà lá Sa Kê', quantity: 1 },
+      { itemName: 'Bánh Mochi', quantity: 4 }
+    ]
   }
 ];
 
@@ -125,8 +192,12 @@ const seedDatabase = async () => {
     
     console.log('📥 Đang thêm dữ liệu mẫu...');
     
-    // Insert users
-    const createdUsers = await User.insertMany(users);
+    // Insert users (dùng create để hash password)
+    const createdUsers = [];
+    for (const user of users) {
+      const created = await User.create(user);
+      createdUsers.push(created);
+    }
     console.log(`✅ Đã thêm ${createdUsers.length} người dùng`);
     
     // Insert products
@@ -138,7 +209,7 @@ const seedDatabase = async () => {
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log('👤 Admin:');
     console.log('   Email: admin@sakefruit.com');
-    console.log('   Password: admin123');
+    console.log('   Password: admin    node src/seeders/seedData.js123');
     console.log('\n👤 Customer 1:');
     console.log('   Email: user01@gmail.com');
     console.log('   Password: user123');

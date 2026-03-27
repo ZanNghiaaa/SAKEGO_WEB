@@ -7,7 +7,8 @@ const CategoriesSection = () => {
   const [categoryCounts, setCategoryCounts] = useState({
     tea: 0,
     'rice-milk': 0,
-    mochi: 0
+    mochi: 0,
+    combo: 0
   });
 
   useEffect(() => {
@@ -16,7 +17,8 @@ const CategoriesSection = () => {
       const counts = {
         tea: products.filter(p => p.category === 'tea').length,
         'rice-milk': products.filter(p => p.category === 'rice-milk').length,
-        mochi: products.filter(p => p.category === 'mochi').length
+        mochi: products.filter(p => p.category === 'mochi').length,
+        combo: products.filter(p => p.category === 'combo').length
       };
       setCategoryCounts(counts);
     };
@@ -59,6 +61,14 @@ const CategoriesSection = () => {
             <h3>Bánh Mochi Sa Kê</h3>
             <p>Mềm mại, nhiều vị</p>
             <div className="category-count">{categoryCounts.mochi} sản phẩm</div>
+          </div>
+          <div className="category-card" onClick={() => handleCategoryClick('combo')}>
+            <div className="category-icon">
+              <i className="fas fa-gift"></i>
+            </div>
+            <h3>Combo Sa Kê</h3>
+            <p>Tiết kiệm, đa dạng</p>
+            <div className="category-count">{categoryCounts.combo} sản phẩm</div>
           </div>
         </div>
       </div>

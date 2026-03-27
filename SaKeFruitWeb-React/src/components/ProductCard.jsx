@@ -41,6 +41,12 @@ const ProductCard = ({ product, onAddToCart }) => {
         return { name: 'Bánh Mochi', color: '#AB47BC' };
       case 'powder':
         return { name: 'Bột', color: '#66BB6A' };
+      case 'tea':
+        return { name: 'Trà Sa Kê', color: '#7CB342' };
+      case 'rice-milk':
+        return { name: 'Sữa Gạo', color: '#FFA726' };
+      case 'combo':
+        return { name: 'Combo', color: '#EF5350' };
       default:
         return { name: 'Sa Kê', color: '#7CB342' };
     }
@@ -61,6 +67,16 @@ const ProductCard = ({ product, onAddToCart }) => {
       <span className="product-badge" style={{ backgroundColor: categoryInfo.color }}>
         {categoryInfo.name}
       </span>
+      {product.isBestSeller && (
+        <span className="best-seller-badge">
+          ⭐ BEST SELLER
+        </span>
+      )}
+      {product.isCombo && product.discount && (
+        <span className="combo-discount-badge">
+          🎁 -{Math.round(product.discount)}%
+        </span>
+      )}
       {product.isTrial && <span className="trial-badge">🎁 Dùng Thử</span>}
       {product.isReadyToEat && (
         <span className="ready-to-eat-badge">
@@ -78,14 +94,23 @@ const ProductCard = ({ product, onAddToCart }) => {
         />
       </div>
       <div className="product-info">
-        <h3 
+        <h3
           onClick={handleCardClick}
           style={{ cursor: 'pointer' }}
         >
           {product.name}
         </h3>
         <p>{product.description}</p>
-        <p className="product-price">{product.price.toLocaleString('vi-VN')}đ</p>
+        <div className="product-price-container">
+          {product.isCombo && product.originalPrice ? (
+            <>
+              <p className="product-price-original">{product.originalPrice.toLocaleString('vi-VN')}đ</p>
+              <p className="product-price product-price-combo">{product.price.toLocaleString('vi-VN')}đ</p>
+            </>
+          ) : (
+            <p className="product-price">{product.price.toLocaleString('vi-VN')}đ</p>
+          )}
+        </div>
         
         <div className="product-buttons-grid">
           <button 
