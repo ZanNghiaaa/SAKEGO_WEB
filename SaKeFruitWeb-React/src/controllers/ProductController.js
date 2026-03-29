@@ -39,8 +39,8 @@ export const getProductsByCategory = (category) => {
 };
 
 export const getProductById = (id) => {
-  // Không có id, chỉ tìm theo tên
-  return sampleProducts.find(p => p.name === id);
+  // Tìm theo id (chuẩn route /product/:id)
+  return sampleProducts.find(p => p.id === id);
 };
 
 export const searchProducts = (searchTerm) => {
