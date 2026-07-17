@@ -72,9 +72,9 @@ const ProductCard = ({ product, onAddToCart }) => {
           ⭐ BEST SELLER
         </span>
       )}
-      {product.isCombo && product.discount && (
+      {product.isCombo && product.originalPrice && product.price && (
         <span className="combo-discount-badge">
-          🎁 -{Math.round(product.discount)}%
+          🎁 -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
         </span>
       )}
       {product.isTrial && <span className="trial-badge">🎁 Dùng Thử</span>}

@@ -326,7 +326,7 @@
 .input-wrapper textarea {
     resize: vertical;
     min-height: 80px;
-    font-family: 'Roboto', sans-serif;
+    font-family: var(--font-sans);
 }
 
 .input-wrapper input:focus,

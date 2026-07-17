@@ -19,24 +19,9 @@ const AdminUsers = () => {
   const loadUsers = async () => {
     try {
       setLoading(true);
-      const token = getToken();
-      const response = await fetch('http://localhost:5000/api/users', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        setUsers(data.users);
-      } else {
-        // Fallback to localStorage
-        setUsers(getUsers());
-      }
+      setUsers(getUsers());
     } catch (error) {
       console.error('Error loading users:', error);
-      // Fallback to localStorage
-      setUsers(getUsers());
     } finally {
       setLoading(false);
     }

@@ -5,11 +5,13 @@ import Layout from './components/Layout';
 import AdminLayout from './components/AdminLayout';
 import Home from './pages/Home';
 import About from './pages/About';
+import Sustainability from './pages/Sustainability';
 import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Contact from './pages/Contact';
+import ARPage from './pages/ARPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
@@ -19,6 +21,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminOrders from './pages/AdminOrders';
 import AdminProducts from './pages/AdminProducts';
 import AdminUsers from './pages/AdminUsers';
+import CustomCursor from './components/CustomCursor';
 
 // Import CSS từ HTML gốc
 import './assets/css/style.css';
@@ -38,15 +41,20 @@ function App() {
   return (
     <CartProvider>
       <Router>
+        {/* <CustomCursor />  */}
+
         <Routes>
           {/* User Routes */}
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="about" element={<About />} />
+            <Route path="thuc-trang" element={<Sustainability />} />
+            <Route path="sustainability" element={<Sustainability />} />
             <Route path="products" element={<Products />} />
             <Route path="product/:id" element={<ProductDetail />} />
             <Route path="cart" element={<Cart />} />
             <Route path="checkout" element={<Checkout />} />
+            <Route path="ar" element={<ARPage />} />
             <Route path="contact" element={<Contact />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />

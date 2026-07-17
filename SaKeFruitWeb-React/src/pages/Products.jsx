@@ -6,6 +6,19 @@ import { useCart } from '../context/CartContext';
 import { useLoading } from '../hooks/useLoading';
 import Loading from '../components/Loading';
 
+const FILTERS = [
+  { key: 'all',       label: 'Tất cả',          icon: 'fas fa-th' },
+  { key: 'tea',       label: 'Trà Sa Kê',        icon: 'fas fa-mug-hot' },
+  { key: 'rice-milk', label: 'Sữa Gạo Sa Kê',   icon: 'fas fa-glass-whiskey' },
+  { key: 'mochi',     label: 'Bánh Mochi Sa Kê', icon: 'fas fa-cookie' },
+  { key: 'combo',     label: 'Combo Sa Kê',      icon: 'fas fa-gift' },
+];
+
+const CATEGORY_LABELS = {
+  tea: 'Trà Sa Kê', 'rice-milk': 'Sữa Gạo Sa Kê',
+  mochi: 'Bánh Mochi Sa Kê', combo: 'Combo Sa Kê',
+};
+
 const Products = () => {
   const location = useLocation();
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -14,7 +27,6 @@ const Products = () => {
   const { isLoading, withLoading } = useLoading();
   const { addToCart } = useCart();
 
-  // Load products from API on mount
   useEffect(() => {
     withLoading(async () => {
       const products = await fetchProductsFromAPI();
@@ -23,13 +35,9 @@ const Products = () => {
   }, []);
 
   useEffect(() => {
-    // Check if category filter was passed from navigation
     const params = new URLSearchParams(location.search);
     const category = params.get('category');
-    
-    if (category) {
-      handleFilter(category);
-    }
+    if (category) handleFilter(category);
   }, [location]);
 
   const handleFilter = (category) => {
@@ -50,149 +58,138 @@ const Products = () => {
 
   const handleAddToCart = (product) => {
     addToCart(product);
-    // Show notification
-    const notification = document.createElement('div');
-    notification.className = 'notification';
-    notification.innerHTML = `<i class="fas fa-check-circle"></i> Đã thêm ${product.name} vào giỏ hàng!`;
-    document.body.appendChild(notification);
-    setTimeout(() => notification.remove(), 3000);
+    const n = document.createElement('div');
+    n.className = 'notification';
+    n.innerHTML = `<i class="fas fa-check-circle"></i> Đã thêm ${product.name} vào giỏ hàng!`;
+    document.body.appendChild(n);
+    setTimeout(() => n.remove(), 3000);
   };
+
+  const resultLabel = activeFilter !== 'all' && activeFilter !== 'search'
+    ? ` trong "${CATEGORY_LABELS[activeFilter] || ''}"` : '';
 
   return (
     <>
       {isLoading && <Loading message="Đang tải sản phẩm..." />}
       <main>
-        {/* Products Header */}
-        <section className="products-header">
-        <div className="container">
-          <h1><i className="fas fa-box-open"></i> Sản Phẩm SAKEGO</h1>
-          
-          {/* Search Box */}
-          <form onSubmit={handleSearch} style={{ maxWidth: '600px', margin: '30px auto' }}>
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <input
-                type="text"
-                placeholder="Tìm kiếm sản phẩm..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                style={{
-                  flex: 1,
-                  padding: '15px 20px',
-                  border: '2px solid #E0E0E0',
-                  borderRadius: '50px',
-                  fontSize: '16px',
-                  outline: 'none',
-                  transition: 'all 0.3s ease'
-                }}
-              />
-              <button 
-                type="submit"
-                className="btn-primary-hero"
-                style={{ 
-                  borderRadius: '50px',
-                  padding: '15px 30px',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                <i className="fas fa-search"></i> Tìm
-              </button>
+
+        {/* ── HERO HEADER ── */}
+        <section className="products-hero">
+          <div className="products-hero-overlay"></div>
+
+          {/* Particles */}
+          <div className="products-hero-particles" aria-hidden="true">
+            <span className="ph-orb ph-orb-1"></span>
+            <span className="ph-orb ph-orb-2"></span>
+            <span className="ph-orb ph-orb-3"></span>
+            <span className="ph-leaf ph-leaf-1"><i className="fas fa-leaf"></i></span>
+            <span className="ph-leaf ph-leaf-2"><i className="fas fa-leaf"></i></span>
+            <span className="ph-leaf ph-leaf-3"><i className="fas fa-leaf"></i></span>
+            <span className="ph-ring ph-ring-1"></span>
+            <span className="ph-ring ph-ring-2"></span>
+          </div>
+
+          <div className="container">
+            <div className="products-hero-content">
+              <span className="products-hero-eyebrow">
+                <span className="eyebrow-dot"></span>
+                Cửa hàng SAKEGO
+              </span>
+              <h1 className="products-hero-title">
+                Sản Phẩm <span className="ph-accent">Sa Kê</span> Nguyên Chất
+              </h1>
+              <p className="products-hero-desc">
+                Khám phá trọn bộ sản phẩm từ thiên nhiên — trà, sữa gạo, mochi và combo đặc biệt
+              </p>
+
+              {/* Search */}
+              <form onSubmit={handleSearch} className="products-search-form">
+                <div className="products-search-inner">
+                  <i className="fas fa-search products-search-icon"></i>
+                  <input
+                    type="text"
+                    placeholder="Tìm kiếm sản phẩm sa kê..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="products-search-input"
+                  />
+                  <button type="submit" className="products-search-btn">
+                    Tìm kiếm
+                  </button>
+                </div>
+              </form>
             </div>
-          </form>
-
-          {/* Filter Buttons */}
-          <div className="filters">
-            <button 
-              className={`filter-btn ${activeFilter === 'all' ? 'active' : ''}`}
-              onClick={() => handleFilter('all')}
-            >
-              <i className="fas fa-th"></i> Tất cả
-            </button>
-            <button 
-              className={`filter-btn ${activeFilter === 'tea' ? 'active' : ''}`}
-              onClick={() => handleFilter('tea')}
-            >
-              <i className="fas fa-mug-hot"></i> Trà Sa Kê
-            </button>
-            <button 
-              className={`filter-btn ${activeFilter === 'rice-milk' ? 'active' : ''}`}
-              onClick={() => handleFilter('rice-milk')}
-            >
-              <i className="fas fa-glass-whiskey"></i> Sữa Gạo Sa Kê
-            </button>
-            <button
-              className={`filter-btn ${activeFilter === 'mochi' ? 'active' : ''}`}
-              onClick={() => handleFilter('mochi')}
-            >
-              <i className="fas fa-cookie"></i> Bánh Mochi Sa Kê
-            </button>
-            <button
-              className={`filter-btn ${activeFilter === 'combo' ? 'active' : ''}`}
-              onClick={() => handleFilter('combo')}
-            >
-              <i className="fas fa-gift"></i> Combo Sa Kê
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Products Grid */}
-      <section className="products-grid">
-        <div className="container">
-          <div className="section-header" style={{ textAlign: 'left', marginBottom: '40px' }}>
-            <p style={{ fontSize: '16px', color: '#666' }}>
-              Hiển thị <strong>{filteredProducts.length}</strong> sản phẩm
-              {searchTerm && ` cho "${searchTerm}"`}
-              {activeFilter !== 'all' && activeFilter !== 'search' && ` trong danh mục "${
-                activeFilter === 'tea' ? 'Trà Sa Kê' :
-                activeFilter === 'rice-milk' ? 'Sữa Gạo Sa Kê' :
-                activeFilter === 'mochi' ? 'Bánh Mochi Sa Kê' :
-                activeFilter === 'combo' ? 'Combo Sa Kê' : ''
-              }"`}
-            </p>
           </div>
 
-          {filteredProducts.length > 0 ? (
-            <div className="product-grid">
-              {filteredProducts.map(product => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onAddToCart={handleAddToCart}
-                />
+          {/* Wave bottom */}
+          <div className="products-hero-wave" aria-hidden="true">
+            <svg viewBox="0 0 1440 70" preserveAspectRatio="none">
+              <path d="M0,35 C360,70 1080,0 1440,35 L1440,70 L0,70 Z" fill="#fafafa"/>
+            </svg>
+          </div>
+        </section>
+
+        {/* ── FILTER BAR ── */}
+        <section className="products-filter-section">
+          <div className="container">
+            <div className="products-filter-bar">
+              {FILTERS.map(f => (
+                <button
+                  key={f.key}
+                  className={`pf-btn${activeFilter === f.key ? ' active' : ''}`}
+                  onClick={() => handleFilter(f.key)}
+                >
+                  <i className={f.icon}></i>
+                  <span>{f.label}</span>
+                </button>
               ))}
             </div>
-          ) : (
-            <div style={{ 
-              textAlign: 'center', 
-              padding: '80px 20px',
-              background: 'white',
-              borderRadius: '15px',
-              boxShadow: '0 2px 15px rgba(0, 0, 0, 0.1)'
-            }}>
-              <i className="fas fa-search" style={{ 
-                fontSize: '80px', 
-                color: '#E0E0E0',
-                marginBottom: '20px',
-                display: 'block'
-              }}></i>
-              <h3 style={{ color: '#666', marginBottom: '10px' }}>Không tìm thấy sản phẩm</h3>
-              <p style={{ color: '#999', marginBottom: '30px' }}>
-                Thử tìm kiếm với từ khóa khác hoặc xem tất cả sản phẩm
-              </p>
-              <button 
-                className="btn-primary-hero"
-                onClick={() => {
-                  setSearchTerm('');
-                  handleFilter('all');
-                }}
-              >
-                <i className="fas fa-redo"></i> Xem tất cả sản phẩm
-              </button>
+          </div>
+        </section>
+
+        {/* ── PRODUCTS GRID ── */}
+        <section className="products-grid-section">
+          <div className="container">
+            <div className="products-result-meta">
+              <span className="result-count">
+                <i className="fas fa-box-open"></i>
+                <strong>{filteredProducts.length}</strong> sản phẩm
+                {searchTerm && ` cho "${searchTerm}"`}
+                {resultLabel}
+              </span>
             </div>
-          )}
-        </div>
-      </section>
-    </main>
+
+            {filteredProducts.length > 0 ? (
+              <div className="product-grid products-grid-animated">
+                {filteredProducts.map((product, idx) => (
+                  <div
+                    key={product.id}
+                    className="product-card-wrapper"
+                    style={{ animationDelay: `${idx * 0.07}s` }}
+                  >
+                    <ProductCard product={product} onAddToCart={handleAddToCart} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="products-empty">
+                <div className="products-empty-icon">
+                  <i className="fas fa-box-open"></i>
+                </div>
+                <h3>Không tìm thấy sản phẩm</h3>
+                <p>Thử tìm kiếm với từ khóa khác hoặc xem tất cả sản phẩm</p>
+                <button
+                  className="products-reset-btn"
+                  onClick={() => { setSearchTerm(''); handleFilter('all'); }}
+                >
+                  <i className="fas fa-redo"></i> Xem tất cả sản phẩm
+                </button>
+              </div>
+            )}
+          </div>
+        </section>
+
+      </main>
     </>
   );
 };

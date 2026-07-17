@@ -1,0 +1,141 @@
+.ar-page {
+  padding-top: 80px; /* Adjust for fixed navbar if needed */
+  padding-bottom: 60px;
+  background-color: #fff;
+  min-height: 80vh;
+}
+
+.ar-page-header {
+  background: linear-gradient(135deg, #f1f8e9, #dcedc8);
+  padding: 40px 0;
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+.ar-page-header h2 {
+  font-size: 32px;
+  color: #33691e;
+  font-weight: 700;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.ar-page-header p {
+  color: #558b2f;
+  font-size: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.ar-content-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  align-items: center;
+}
+
+.ar-info-side {
+  flex: 1;
+  min-width: 300px;
+}
+
+.ar-info-side h3 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.ar-info-side p {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.ar-features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 30px 0;
+}
+
+.ar-features-list li {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #444;
+  line-height: 1.5;
+}
+
+.ar-features-list li i {
+  color: #7cb342;
+  margin-top: 4px;
+}
+
+.ar-cta-box {
+  background: #fff8e1;
+  border-left: 4px solid #ffb300;
+  padding: 15px 20px;
+  border-radius: 4px;
+}
+
+.ar-cta-box p {
+  margin: 0;
+  color: #ff8f00;
+  font-size: 15px;
+}
+
+.ar-model-side {
+  flex: 1;
+  min-width: 300px;
+}
+
+.ar-model-box {
+  background: #fff;
+  padding: 15px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  position: relative;
+}
+
+.ar-button-page {
+  background-color: white;
+  border-radius: 30px;
+  border: none;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 20px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s;
+}
+
+.ar-button-page:hover {
+  transform: translateX(-50%) translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.ar-button-page i {
+  color: #ff9800;
+  font-size: 16px;
+}
+
+.ar-model-hint {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 13px;
+  color: #888;
+}

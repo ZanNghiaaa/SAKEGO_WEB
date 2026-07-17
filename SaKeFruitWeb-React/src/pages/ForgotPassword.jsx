@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getUsers } from '../controllers/UserController';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -13,24 +14,18 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/forgot-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email })
-      });
+      // Giả lập kiểm tra email trong danh sách user local
+      const users = getUsers();
+      const userExists = users.some(u => u.email.toLowerCase() === email.toLowerCase());
 
-      const data = await response.json();
-
-      if (data.success) {
+      if (userExists) {
         setSuccess(true);
       } else {
-        setError(data.message || 'Có lỗi xảy ra. Vui lòng thử lại!');
+        setError('Email không tồn tại trong hệ thống!');
       }
     } catch (error) {
       console.error('Forgot password error:', error);
-      setError('Không thể kết nối đến server. Vui lòng thử lại!');
+      setError('Có lỗi xảy ra. Vui lòng thử lại!');
     } finally {
       setLoading(false);
     }

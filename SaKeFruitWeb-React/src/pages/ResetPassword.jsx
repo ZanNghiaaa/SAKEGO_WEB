@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
+import { getUsers, loginUserLocal } from '../controllers/UserController';
 
 const ResetPassword = () => {
   const { token } = useParams();
@@ -39,29 +40,30 @@ const ResetPassword = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`http://localhost:5000/api/auth/reset-password/${token}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ password: formData.password })
-      });
+      // Tìm tài khoản customer 'user01' để cập nhật mật khẩu làm demo
+      const users = getUsers();
+      const user = users.find(u => u.username === 'user01') || users[0];
 
-      const data = await response.json();
+      if (user) {
+        // Cập nhật mật khẩu mới trong localStorage
+        user.password = formData.password;
+        localStorage.setItem('sakefruit_users', JSON.stringify(users));
 
-      if (data.success) {
-        // Store token and user info
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
+        // Tự động đăng nhập bằng mật khẩu mới
+        const loggedInUser = loginUserLocal(user.username, formData.password);
         
+        // Lưu mock token
+        const mockToken = 'mock_jwt_token_' + Math.random().toString(36).substring(2);
+        localStorage.setItem('token', mockToken);
+
         alert('Đặt lại mật khẩu thành công!');
         navigate('/');
       } else {
-        setError(data.message || 'Có lỗi xảy ra. Vui lòng thử lại!');
+        setError('Không tìm thấy tài khoản người dùng!');
       }
     } catch (error) {
       console.error('Reset password error:', error);
-      setError('Không thể kết nối đến server. Vui lòng thử lại!');
+      setError('Có lỗi xảy ra. Vui lòng thử lại!');
     } finally {
       setLoading(false);
     }

@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: sakefruit-backend
+    env: node
+    region: singapore
+    plan: free
+    rootDir: SaKeFruitWeb-Backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false  # Set manually in Render dashboard
+      - key: JWT_SECRET
+        sync: false  # Set manually in Render dashboard
+      - key: JWT_EXPIRE
+        value: 7d
+      - key: CORS_ORIGIN
+        sync: false  # Set to Vercel URL after deploy
+      - key: FRONTEND_URL
+        sync: false  # Set to Vercel URL after deploy
+      - key: EMAIL_HOST
+        value: smtp.gmail.com
+      - key: EMAIL_PORT
+        value: 587
+      - key: EMAIL_USER
+        sync: false  # Set manually
+      - key: EMAIL_PASS
+        sync: false  # Set manually

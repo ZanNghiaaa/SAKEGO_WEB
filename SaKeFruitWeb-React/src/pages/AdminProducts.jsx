@@ -115,42 +115,10 @@ const AdminProducts = () => {
     setImagePreview('');
   };
 
-  // Upload image to server
+  // Upload image to server (Local version: returns base64 data URI directly)
   const uploadImageToServer = async () => {
     if (!imageFile) return null;
-
-    const token = localStorage.getItem('token');
-    if (!token) {
-      throw new Error('Vui lòng đăng nhập lại!');
-    }
-
-    const formDataUpload = new FormData();
-    formDataUpload.append('image', imageFile);
-
-    try {
-      setUploading(true);
-      const response = await fetch('http://localhost:5000/api/upload/image', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formDataUpload
-      });
-
-      const data = await response.json();
-      
-      if (!data.success) {
-        throw new Error(data.message || 'Lỗi khi upload ảnh');
-      }
-
-      // Return full URL with domain
-      return `http://localhost:5000${data.url}`;
-    } catch (error) {
-      console.error('Upload error:', error);
-      throw error;
-    } finally {
-      setUploading(false);
-    }
+    return imagePreview;
   };
 
   // Open add modal

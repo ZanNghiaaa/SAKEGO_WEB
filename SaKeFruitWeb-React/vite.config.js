@@ -6,5 +6,12 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true
+  },
+  define: {
+    // Fallback nếu không có VITE_API_URL (local dev)
+    'import.meta.env.VITE_API_URL': JSON.stringify(
+      process.env.VITE_API_URL || 'http://localhost:5000/api'
+    )
   }
 })
+

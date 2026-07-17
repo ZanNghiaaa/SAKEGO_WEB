@@ -218,8 +218,10 @@ const Navbar = () => {
                     <ul>
                       <li><Link to="/" onClick={() => setShowCombinedMenu(false)}><i className="fas fa-home"></i> Trang chủ</Link></li>
                       <li><Link to="/about" onClick={() => setShowCombinedMenu(false)}><i className="fas fa-info-circle"></i> Giới thiệu</Link></li>
+                      <li><Link to="/thuc-trang" onClick={() => setShowCombinedMenu(false)}><i className="fas fa-chart-line"></i> Thực trạng</Link></li>
                       <li><Link to="/products" onClick={() => setShowCombinedMenu(false)}><i className="fas fa-box"></i> Sản phẩm</Link></li>
                       <li><Link to="/contact" onClick={() => setShowCombinedMenu(false)}><i className="fas fa-envelope"></i> Liên hệ</Link></li>
+                      <li><Link to="/ar" onClick={() => setShowCombinedMenu(false)}><i className="fas fa-cube"></i> Công nghệ AR</Link></li>
                     </ul>
                   </div>
 
@@ -240,8 +242,10 @@ const Navbar = () => {
           <ul className="nav-menu desktop-only">
             <li><Link to="/" className={location.pathname === '/' ? 'active' : ''}>Trang chủ</Link></li>
             <li><Link to="/about" className={location.pathname === '/about' ? 'active' : ''}>Giới thiệu</Link></li>
+            <li><Link to="/thuc-trang" className={location.pathname === '/thuc-trang' || location.pathname === '/sustainability' ? 'active' : ''}>Thực trạng</Link></li>
             <li><Link to="/products" className={location.pathname === '/products' ? 'active' : ''}>Sản phẩm</Link></li>
             <li><Link to="/contact" className={location.pathname === '/contact' ? 'active' : ''}>Liên hệ</Link></li>
+            <li><Link to="/ar" className={location.pathname === '/ar' ? 'active' : ''}>Công nghệ AR</Link></li>
           </ul>
 
           <div className="search-box">
