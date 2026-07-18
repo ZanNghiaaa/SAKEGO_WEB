@@ -193,7 +193,19 @@ export const getOrdersStatistics = async () => {
     });
     const data = await res.json();
     if (!data.success) throw new Error('Lỗi thống kê');
-    return data.statistics || data;
+    
+    // Map dữ liệu từ backend sang format Frontend cần
+    const stats = data.statistics?.orders || {};
+    return {
+      total: stats.totalOrders || 0,
+      pending: stats.pendingOrders || 0,
+      confirmed: stats.confirmedOrders || 0,
+      preparing: stats.preparingOrders || 0,
+      delivering: stats.deliveringOrders || 0,
+      completed: stats.completedOrders || 0,
+      cancelled: stats.cancelledOrders || 0,
+      totalRevenue: stats.totalRevenue || 0
+    };
   } catch (error) {
     console.error('Error getting statistics:', error);
     return {

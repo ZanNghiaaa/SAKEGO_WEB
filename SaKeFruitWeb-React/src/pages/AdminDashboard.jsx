@@ -283,7 +283,7 @@ const AdminDashboard = () => {
                       <td>{order.customerInfo.phone}</td>
                       <td>
                         <strong className="text-success">
-                          {order.totalAmount.toLocaleString('vi-VN')}đ
+                          {(order.totalAmount || 0).toLocaleString('vi-VN')}đ
                         </strong>
                       </td>
                       <td>
