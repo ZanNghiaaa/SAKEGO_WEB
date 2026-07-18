@@ -2,6 +2,11 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const CartContext = createContext();
 
+// Kiểm tra xem ID có phải MongoDB ObjectId hợp lệ không
+const isValidMongoId = (id) => {
+  return id && typeof id === 'string' && /^[0-9a-fA-F]{24}$/.test(id);
+};
+
 export const useCart = () => {
   const context = useContext(CartContext);
   if (!context) {
@@ -18,9 +23,21 @@ export const CartProvider = ({ children }) => {
     const savedCart = localStorage.getItem('cart');
     if (savedCart) {
       try {
-        setCartItems(JSON.parse(savedCart));
+        const parsed = JSON.parse(savedCart);
+        // Lọc bỏ các item có ID cũ/không hợp lệ (không phải MongoDB ObjectId)
+        const validItems = parsed.filter(item => {
+          const id = item._id || item.id;
+          return isValidMongoId(id);
+        });
+        // Nếu có item bị lọc bỏ, xóa cart cũ
+        if (validItems.length !== parsed.length) {
+          console.warn('⚠️ Đã xóa sản phẩm cũ khỏi giỏ hàng (ID không hợp lệ). Vui lòng thêm lại sản phẩm.');
+          localStorage.removeItem('cart');
+        }
+        setCartItems(validItems);
       } catch (error) {
         console.error('Error loading cart:', error);
+        localStorage.removeItem('cart');
         setCartItems([]);
       }
     }
@@ -29,30 +46,44 @@ export const CartProvider = ({ children }) => {
   // Save cart to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cartItems));
-    console.log('Cart updated:', cartItems);
   }, [cartItems]);
 
   const addToCart = (product) => {
-    console.log('Adding to cart:', product);
+    // Normalize: luôn dùng _id từ MongoDB làm key chính
+    const normalizedProduct = {
+      ...product,
+      _id: product._id || product.id,
+      id: product._id || product.id,
+    };
+
+    // Validate ID trước khi thêm vào giỏ
+    if (!isValidMongoId(normalizedProduct._id)) {
+      console.error('⚠️ Sản phẩm có ID không hợp lệ, không thể thêm vào giỏ:', normalizedProduct);
+      alert('Không thể thêm sản phẩm này vào giỏ hàng. Vui lòng thử lại!');
+      return;
+    }
+
     setCartItems(prevItems => {
-      const existingItem = prevItems.find(item => item.id === product.id);
-      
+      const existingItem = prevItems.find(
+        item => (item._id || item.id) === normalizedProduct._id
+      );
+
       if (existingItem) {
-        console.log('Product exists, updating quantity');
         return prevItems.map(item =>
-          item.id === product.id
+          (item._id || item.id) === normalizedProduct._id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       } else {
-        console.log('New product, adding to cart');
-        return [...prevItems, { ...product, quantity: 1 }];
+        return [...prevItems, { ...normalizedProduct, quantity: 1 }];
       }
     });
   };
 
   const removeFromCart = (productId) => {
-    setCartItems(prevItems => prevItems.filter(item => item.id !== productId));
+    setCartItems(prevItems =>
+      prevItems.filter(item => (item._id || item.id) !== productId)
+    );
   };
 
   const updateQuantity = (productId, newQuantity) => {
@@ -61,7 +92,7 @@ export const CartProvider = ({ children }) => {
     } else {
       setCartItems(prevItems =>
         prevItems.map(item =>
-          item.id === productId
+          (item._id || item.id) === productId
             ? { ...item, quantity: newQuantity }
             : item
         )

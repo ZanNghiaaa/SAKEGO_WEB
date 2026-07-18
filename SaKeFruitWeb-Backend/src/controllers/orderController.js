@@ -2,6 +2,7 @@ import Order from '../models/Order.js';
 import Product from '../models/Product.js';
 import Notification from '../models/Notification.js';
 import { sendEmail, orderConfirmationEmail } from '../utils/email.js';
+import mongoose from 'mongoose';
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -28,6 +29,14 @@ export const createOrder = async (req, res, next) => {
     const orderItems = [];
     
     for (const item of items) {
+      // Validate productId là MongoDB ObjectId hợp lệ
+      if (!item.productId || !mongoose.Types.ObjectId.isValid(item.productId)) {
+        return res.status(400).json({
+          success: false,
+          message: `Sản phẩm trong giỏ hàng không hợp lệ. Vui lòng làm mới trang và thêm sản phẩm lại!`
+        });
+      }
+
       const product = await Product.findById(item.productId);
       
       if (!product) {
