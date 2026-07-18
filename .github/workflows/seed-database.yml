@@ -1,0 +1,30 @@
+name: Seed Database
+
+on:
+  workflow_dispatch:  # Chạy thủ công từ GitHub Actions tab
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: SaKeFruitWeb-Backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run database seed
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          JWT_SECRET: sakego_super_secret_jwt_key_2026
+          NODE_ENV: production
+        run: node src/seeders/seedData.js
