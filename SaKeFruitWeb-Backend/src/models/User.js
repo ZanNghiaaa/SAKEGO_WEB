@@ -20,9 +20,16 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, 'Mật khẩu là bắt buộc'],
     minlength: [6, 'Mật khẩu phải có ít nhất 6 ký tự'],
     select: false // Don't return password by default
+  },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
+  avatar: {
+    type: String
   },
   fullname: {
     type: String,
@@ -89,6 +96,7 @@ userSchema.methods.toPublicJSON = function() {
     phone: this.phone,
     address: this.address,
     role: this.role,
+    avatar: this.avatar,
     createdAt: this.createdAt
   };
 };

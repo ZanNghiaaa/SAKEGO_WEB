@@ -2,6 +2,9 @@ import User from '../models/User.js';
 import { generateToken } from '../middleware/auth.js';
 import { sendEmail, resetPasswordEmail, tempPasswordEmail } from '../utils/email.js';
 import crypto from 'crypto';
+import { OAuth2Client } from 'google-auth-library';
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // @desc    Register new user
 // @route   POST /api/auth/register
@@ -243,5 +246,70 @@ export const resetPassword = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+  }
+};
+
+// @desc    Google Auth Login/Register
+// @route   POST /api/auth/google
+// @access  Public
+export const googleAuth = async (req, res, next) => {
+  try {
+    const { credential } = req.body;
+    if (!credential) {
+      return res.status(400).json({ success: false, message: 'Thiếu credential' });
+    }
+
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID
+    });
+
+    const payload = ticket.getPayload();
+    const { sub, email, name, picture } = payload;
+
+    // Check if user exists by googleId
+    let user = await User.findOne({ googleId: sub });
+
+    if (!user) {
+      // Check if user exists by email (link accounts if so)
+      user = await User.findOne({ email });
+
+      if (user) {
+        // Link googleId to existing user
+        user.googleId = sub;
+        if (!user.avatar) user.avatar = picture;
+        await user.save();
+      } else {
+        // Create new user
+        // Chú ý: sđt bắt buộc ở schema gốc, nên tạo một default
+        user = await User.create({
+          googleId: sub,
+          username: email.split('@')[0] + '_' + Math.random().toString(36).substring(2, 6),
+          email,
+          fullname: name,
+          avatar: picture,
+          phone: '0000000000', // Sẽ được yêu cầu cập nhật sau
+          address: '',
+          isActive: true
+        });
+      }
+    }
+
+    // Update last login
+    user.lastLogin = Date.now();
+    await user.save();
+
+    // Generate token
+    const token = generateToken(user._id);
+
+    res.json({
+      success: true,
+      message: 'Đăng nhập Google thành công!',
+      token,
+      user: user.toPublicJSON()
+    });
+  } catch (error) {
+    console.error('Google Auth Error:', error);
+    res.status(400).json({ success: false, message: 'Xác thực Google thất bại' });
   }
 };

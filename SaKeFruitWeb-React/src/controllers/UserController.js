@@ -51,6 +51,23 @@ export const loginUser = async (emailOrUsername, password) => {
   return data.user;
 };
 
+// Đăng nhập bằng Google
+export const googleLoginUser = async (credential) => {
+  const res = await fetch(`${API_URL}/auth/google`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ credential })
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || 'Đăng nhập Google thất bại!');
+
+  // Lưu token và thông tin user
+  localStorage.setItem(TOKEN_KEY, data.token);
+  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(data.user));
+  window.dispatchEvent(new Event('authStateChanged'));
+  return data.user;
+};
+
 // Đăng xuất
 export const logoutUser = () => {
   localStorage.removeItem(CURRENT_USER_KEY);

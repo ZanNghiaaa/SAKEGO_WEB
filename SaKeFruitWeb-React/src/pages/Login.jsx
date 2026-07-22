@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { loginUser, getCurrentUser, isAdmin } from '../controllers/UserController';
+import { loginUser, googleLoginUser, getCurrentUser, isAdmin } from '../controllers/UserController';
+import { GoogleLogin } from '@react-oauth/google';
 import { useLoading } from '../hooks/useLoading';
 import Loading from '../components/Loading';
 
@@ -48,6 +49,29 @@ const Login = () => {
         setError(err.message);
       }
     }, 500); // Minimum delay
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setError('');
+    await withLoading(async () => {
+      try {
+        const user = await googleLoginUser(credentialResponse.credential);
+        alert(`Chào mừng ${user.fullname || user.username}! Đăng nhập bằng Google thành công.`);
+        
+        // Force page reload to update all components
+        if (user.role === 'admin') {
+          window.location.href = '/admin'; // Admin → Admin Dashboard
+        } else {
+          window.location.href = '/'; // Customer → Home page
+        }
+      } catch (err) {
+        setError(err.message);
+      }
+    }, 500);
+  };
+
+  const handleGoogleError = () => {
+    setError('Đăng nhập bằng Google thất bại. Vui lòng thử lại.');
   };
 
   return (
@@ -142,6 +166,22 @@ const Login = () => {
                   <span>Đăng nhập</span>
                   <i className="fas fa-arrow-right"></i>
                 </button>
+
+                <div className="oauth-divider" style={{ display: 'flex', alignItems: 'center', margin: '20px 0', color: '#666', fontSize: '14px' }}>
+                  <hr style={{ flex: 1, borderTop: '1px solid #ddd' }} />
+                  <span style={{ padding: '0 10px' }}>Hoặc đăng nhập bằng</span>
+                  <hr style={{ flex: 1, borderTop: '1px solid #ddd' }} />
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                  <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={handleGoogleError}
+                    useOneTap
+                    shape="pill"
+                    theme="outline"
+                  />
+                </div>
 
                 <div className="form-footer">
                   <p>
