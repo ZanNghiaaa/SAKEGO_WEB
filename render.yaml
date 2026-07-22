@@ -27,6 +27,8 @@ services:
       - key: EMAIL_PORT
         value: 587
       - key: EMAIL_USER
-        sync: false  # Set manually
+        value: NghiaNVCE180831@fpt.edu.vn
       - key: EMAIL_PASS
-        sync: false  # Set manually
+        value: owboermmhpovuaaw
+      - key: GOOGLE_CLIENT_ID
+        value: 843574205432-0gspctlgqqc5957vro42fpiibhesn5af.apps.googleusercontent.com
