@@ -103,18 +103,12 @@ export const createOrder = async (req, res, next) => {
     // Populate product details
     await order.populate('items.productId');
     
-    // Send confirmation email to customer
-    try {
-      await sendEmail({
-        email: customerInfo.email,
-        subject: '✅ Xác nhận đơn hàng - SaKeFruit',
-        html: orderConfirmationEmail(order)
-      });
-      console.log('✉️ Email xác nhận đã được gửi đến:', customerInfo.email);
-    } catch (emailError) {
-      console.error('⚠️ Không thể gửi email:', emailError.message);
-      // Continue even if email fails - don't block order creation
-    }
+    // Send confirmation email to customer (Non-blocking)
+    sendEmail({
+      email: customerInfo.email,
+      subject: '✅ Xác nhận đơn hàng - SaKeFruit',
+      html: orderConfirmationEmail(order)
+    });
     
     res.status(201).json({
       success: true,
