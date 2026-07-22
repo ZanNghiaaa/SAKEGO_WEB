@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { getCurrentUser, updateUserProfile, logoutUser } from '../controllers/UserController';
 import { getOrdersByUserId, ORDER_STATUS_TEXT } from '../controllers/OrderController';
 import '../assets/css/profile-page.css';
 
 const Profile = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const orderSuccess = location.state?.orderSuccess;
+  const orderNumber = location.state?.orderNumber;
+  const orderTotal = location.state?.totalAmount;
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [orders, setOrders] = useState([]);
@@ -89,6 +93,29 @@ const Profile = () => {
 
       <section className="profile-section">
         <div className="container">
+
+          {/* Banner đặt hàng thành công */}
+          {orderSuccess && (
+            <div style={{
+              background: 'linear-gradient(135deg, #22c55e, #16a34a)',
+              color: '#fff', borderRadius: '16px', padding: '20px 28px',
+              marginBottom: '28px', display: 'flex', alignItems: 'center', gap: '16px',
+              boxShadow: '0 4px 20px rgba(34,197,94,0.35)'
+            }}>
+              <div style={{ fontSize: '40px' }}>🎉</div>
+              <div>
+                <div style={{ fontSize: '18px', fontWeight: 700, marginBottom: '4px' }}>
+                  Đặt hàng thành công!
+                </div>
+                <div style={{ fontSize: '14px', opacity: 0.9 }}>
+                  {orderNumber && <>Mã đơn: <strong>{orderNumber}</strong> &nbsp;·&nbsp;</>}
+                  {orderTotal && <>Tổng tiền: <strong>{orderTotal.toLocaleString('vi-VN')}đ</strong> &nbsp;·&nbsp;</>}
+                  Chúng tôi sẽ liên hệ và giao hàng tận nơi tại Cần Thơ. Cảm ơn bạn! 🌿
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="profile-grid">
             {/* Sidebar */}
             <div className="profile-sidebar">

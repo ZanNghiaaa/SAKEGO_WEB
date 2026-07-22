@@ -41,31 +41,41 @@ const Checkout = () => {
     });
   };
 
+  const [toast, setToast] = useState(null); // { type: 'success'|'error', message }
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const showToast = (type, message) => {
+    setToast({ type, message });
+    setTimeout(() => setToast(null), 5000);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    if (isSubmitted) return;
+
     if (cartItems.length === 0) {
-      alert('Giỏ hàng trống!');
+      showToast('error', 'Giỏ hàng trống!');
       return;
     }
 
     // Validate Cần Thơ address
     if (!formData.district || !CAN_THO_DISTRICTS.includes(formData.district)) {
-      alert('⚠️ Hiện tại chúng tôi chỉ giao hàng tại TP. Cần Thơ!\nVui lòng chọn quận/huyện thuộc Cần Thơ.');
+      showToast('error', '⚠️ Hiện tại chúng tôi chỉ giao hàng tại TP. Cần Thơ! Vui lòng chọn quận/huyện thuộc Cần Thơ.');
       return;
     }
 
     if (!currentUser) {
-      alert('Vui lòng đăng nhập để đặt hàng!');
+      showToast('error', 'Vui lòng đăng nhập để đặt hàng!');
       navigate('/login');
       return;
     }
 
+    setIsSubmitted(true);
     await withLoading(async () => {
       try {
         // Tạo đơn hàng
         const orderData = {
-          userId: currentUser.id,
+          userId: currentUser.id || currentUser._id,
           fullname: formData.fullname,
           email: formData.email,
           phone: formData.phone,
@@ -79,17 +89,23 @@ const Checkout = () => {
         };
 
         const newOrder = await createOrder(orderData);
-        
-        // Clear cart
-        clearCart();
-        
-        // Success message
-        alert(`🎉 Đặt hàng thành công!\n\nMã đơn hàng: ${newOrder.orderNumber}\nTổng tiền: ${getTotal().toLocaleString('vi-VN')}đ\n\nEmail xác nhận đã được gửi tới: ${formData.email}\nChúng tôi sẽ liên hệ và giao hàng tận nơi tại Cần Thơ!\nCảm ơn bạn đã mua hàng tại SaKeFruit! 🍊`);
-        
-        navigate('/profile');
+
+        // Navigate trước, sau đó clearCart để tránh render trang giỏ trống
+        navigate('/profile', {
+          state: {
+            orderSuccess: true,
+            orderNumber: newOrder.orderNumber,
+            totalAmount: getTotal()
+          }
+        });
+
+        // Clear cart sau khi navigate
+        setTimeout(() => clearCart(), 100);
+
       } catch (error) {
         console.error('Order error:', error);
-        alert(error.message || 'Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!');
+        setIsSubmitted(false);
+        showToast('error', error.message || 'Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!');
       }
     }, 500);
   };
@@ -116,6 +132,19 @@ const Checkout = () => {
   return (
     <>
       {isLoading && <Loading message="Đang xử lý đơn hàng..." />}
+
+      {/* Toast thông báo inline */}
+      {toast && (
+        <div style={{
+          position: 'fixed', top: '80px', left: '50%', transform: 'translateX(-50%)',
+          zIndex: 9999, padding: '14px 24px', borderRadius: '12px', maxWidth: '90vw',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.2)', fontWeight: 600, fontSize: '15px',
+          backgroundColor: toast.type === 'success' ? '#22c55e' : '#ef4444',
+          color: '#fff', textAlign: 'center', animation: 'fadeInDown 0.3s ease'
+        }}>
+          {toast.type === 'success' ? '🎉 ' : '⚠️ '}{toast.message}
+        </div>
+      )}
       <main className="checkout-page">
         <div className="container">
         <div className="checkout-header">
@@ -518,9 +547,15 @@ const Checkout = () => {
                   </div>
 
                   {/* Submit Button */}
-                  <button type="submit" className="btn-place-order">
-                    <i className="fas fa-check-circle"></i>
-                    Hoàn Tất Đặt Hàng
+                  <button
+                    type="submit"
+                    className="btn-place-order"
+                    disabled={isLoading || isSubmitted}
+                    style={(isLoading || isSubmitted) ? { opacity: 0.6, cursor: 'not-allowed' } : {}}
+                  >
+                    {isLoading || isSubmitted
+                      ? <><i className="fas fa-spinner fa-spin"></i> Đang xử lý...</>
+                      : <><i className="fas fa-check-circle"></i> Hoàn Tất Đặt Hàng</>}
                   </button>
 
                   <button 
