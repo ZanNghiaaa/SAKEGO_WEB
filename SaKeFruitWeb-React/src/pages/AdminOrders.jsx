@@ -11,6 +11,7 @@ const AdminOrders = () => {
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [loadingId, setLoadingId] = useState(null); // ID đơn đang được cập nhật
 
   // Load orders on mount
   useEffect(() => {
@@ -53,18 +54,28 @@ const AdminOrders = () => {
   };
 
   const handleUpdateStatus = async (orderId, newStatus) => {
-    if (window.confirm(`Bạn có chắc muốn chuyển đơn hàng sang trạng thái "${ORDER_STATUS_TEXT[newStatus]}"?`)) {
-      try {
-        const updatedOrder = await updateOrderStatus(orderId, newStatus);
-        const allOrders = await getAllOrders();
-        setOrders(allOrders);
-        if (selectedOrder && selectedOrder._id === orderId) {
-          setSelectedOrder(updatedOrder);
-        }
-        alert(`✅ Đã cập nhật trạng thái đơn hàng thành công!`);
-      } catch (error) {
-        alert(`❌ Lỗi: ${error.message}`);
+    setLoadingId(orderId);
+    try {
+      const updatedOrder = await updateOrderStatus(orderId, newStatus);
+      const allOrders = await getAllOrders();
+      setOrders(allOrders);
+      if (selectedOrder && (selectedOrder._id === orderId || selectedOrder.id === orderId)) {
+        setSelectedOrder(updatedOrder);
       }
+    } catch (error) {
+      console.error('Lỗi cập nhật trạng thái:', error);
+      // hiện lỗi inline thay vì alert
+      const errMsg = error.message || 'Lỗi không xác định';
+      setOrders(prev => prev.map(o =>
+        (o.id === orderId || o._id === orderId)
+          ? { ...o, _updateError: errMsg }
+          : o
+      ));
+      setTimeout(() => {
+        setOrders(prev => prev.map(o => ({ ...o, _updateError: undefined })));
+      }, 3000);
+    } finally {
+      setLoadingId(null);
     }
   };
 
@@ -195,7 +206,7 @@ const AdminOrders = () => {
                       <td>{order.items.length} món</td>
                       <td>
                         <strong className="text-success">
-                          {order.totalAmount.toLocaleString('vi-VN')}đ
+                          {(order.totalAmount || 0).toLocaleString('vi-VN')}đ
                         </strong>
                       </td>
                       <td>
@@ -222,20 +233,30 @@ const AdminOrders = () => {
                           {getNextStatus(order.status) && (
                             <button 
                               className="btn-action btn-action-next"
-                              onClick={() => handleUpdateStatus(order.id, getNextStatus(order.status))}
+                              onClick={() => handleUpdateStatus(order.id || order._id, getNextStatus(order.status))}
                               title={`Chuyển sang ${ORDER_STATUS_TEXT[getNextStatus(order.status)]}`}
+                              disabled={loadingId === (order.id || order._id)}
+                              style={loadingId === (order.id || order._id) ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
                             >
-                              <i className="fas fa-arrow-right"></i>
+                              {loadingId === (order.id || order._id)
+                                ? <i className="fas fa-spinner fa-spin"></i>
+                                : <i className="fas fa-arrow-right"></i>}
                             </button>
                           )}
                           {order.status !== ORDER_STATUS.CANCELLED && order.status !== ORDER_STATUS.COMPLETED && (
                             <button 
                               className="btn-action btn-action-cancel"
-                              onClick={() => handleUpdateStatus(order.id, ORDER_STATUS.CANCELLED)}
+                              onClick={() => handleUpdateStatus(order.id || order._id, ORDER_STATUS.CANCELLED)}
                               title="Hủy đơn"
+                              disabled={loadingId === (order.id || order._id)}
                             >
                               <i className="fas fa-times"></i>
                             </button>
+                          )}
+                          {order._updateError && (
+                            <span style={{ color: 'red', fontSize: '11px', display: 'block' }}>
+                              ❌ {order._updateError}
+                            </span>
                           )}
                         </div>
                       </td>
