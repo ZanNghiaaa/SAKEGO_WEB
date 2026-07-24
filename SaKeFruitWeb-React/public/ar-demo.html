@@ -111,27 +111,27 @@
         overlay.style.display = 'none';
         debugUI.innerText = "Trạng thái: Vui lòng đưa camera quét Hiro Marker";
         
+        // Phát video ngay khi người dùng bấm nút (đây là User Gesture hợp lệ trên iOS)
+        // Tuyệt đối không pause() lại để tránh Safari block quyền phát.
         video.play().then(() => {
-          video.pause();
-          debugUI.innerText += "\n(Video đã sẵn sàng, chờ marker...)";
+          debugUI.innerText += "\n(Video đang chạy ẩn, hãy quét marker để xem)";
         }).catch(err => {
           debugUI.innerText += "\n(Lỗi load video: " + err.message + ")";
         });
       });
 
       marker.addEventListener('markerFound', function() {
-        debugUI.innerText = "Trạng thái: ĐÃ TÌM THẤY MARKER!\nĐang phát video...";
+        debugUI.innerText = "Trạng thái: ĐÃ TÌM THẤY MARKER!";
         debugUI.style.color = "#00ff00";
-        video.play().catch(e => {
-            debugUI.innerText = "Trạng thái: Lỗi phát video: " + e.message;
-            debugUI.style.color = "red";
-        });
+        // Khi tìm thấy marker, ta chỉ cần tua lại từ đầu.
+        // Tránh gọi lệnh video.play() ở đây vì Safari sẽ báo "NotSupportedError" (do không có thao tác bấm)
+        video.currentTime = 0;
       });
 
       marker.addEventListener('markerLost', function() {
         debugUI.innerText = "Trạng thái: MẤT MARKER - Hãy quét lại";
         debugUI.style.color = "yellow";
-        video.pause();
+        // Không pause video, cứ để nó phát ẩn.
       });
     </script>
   </body>
