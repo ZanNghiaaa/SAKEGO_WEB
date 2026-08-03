@@ -443,10 +443,10 @@ const AdminDashboard = () => {
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             fontSize: 12, color: 'white', fontWeight: 700, flexShrink: 0
                           }}>
-                            {(order.customerInfo?.fullname || 'K')[0].toUpperCase()}
+                            {(order.customerInfo?.fullname || order.customerName || 'K')[0].toUpperCase()}
                           </div>
-                          <span style={{ color: 'white', fontWeight: 600, fontSize: 13 }}>
-                            {order.customerInfo?.fullname || '—'}
+                          <span style={{ color: 'var(--admin-text)', fontWeight: 600, fontSize: 13 }}>
+                            {order.customerInfo?.fullname || order.customerName || '—'}
                           </span>
                         </div>
                       </td>

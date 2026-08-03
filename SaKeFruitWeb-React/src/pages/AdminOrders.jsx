@@ -119,9 +119,9 @@ const AdminOrders = () => {
           { label: 'Hoàn thành',   value: countByStatus('completed'), color: '#22c55e', icon: 'fa-check-circle' },
         ].map((m, i) => (
           <div key={i} style={{
-            background: 'var(--admin-surface)', border: '1px solid var(--admin-border)',
+            background: 'white', border: '1px solid var(--admin-border)',
             borderRadius: 12, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14,
-            transition: 'all 0.2s'
+            transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
           }}>
             <div style={{
               width: 40, height: 40, borderRadius: 10, background: `${m.color}20`,
@@ -131,7 +131,7 @@ const AdminOrders = () => {
               <i className={`fas ${m.icon}`} />
             </div>
             <div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: 'white', lineHeight: 1 }}>{m.value}</div>
+              <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--admin-text)', lineHeight: 1 }}>{m.value}</div>
               <div style={{ fontSize: 12, color: 'var(--admin-text-muted)', fontWeight: 500 }}>{m.label}</div>
             </div>
           </div>
@@ -231,14 +231,14 @@ const AdminOrders = () => {
                               display: 'flex', alignItems: 'center', justifyContent: 'center',
                               fontSize: 12, color: 'white', fontWeight: 700, flexShrink: 0
                             }}>
-                              {(order.customerInfo?.fullname || 'K')[0].toUpperCase()}
+                              {(order.customerInfo?.fullname || order.customerName || 'K')[0].toUpperCase()}
                             </div>
                             <div>
-                              <div style={{ fontWeight: 700, color: 'white', fontSize: 13 }}>
-                                {order.customerInfo?.fullname || '—'}
+                              <div style={{ fontWeight: 700, color: 'var(--admin-text)', fontSize: 13 }}>
+                                {order.customerInfo?.fullname || order.customerName || '—'}
                               </div>
                               <div style={{ fontSize: 11, color: 'var(--admin-text-muted)' }}>
-                                {order.customerInfo?.email || ''}
+                                {order.customerInfo?.email || order.customerEmail || ''}
                               </div>
                             </div>
                           </div>
@@ -255,7 +255,7 @@ const AdminOrders = () => {
                         </td>
                         <td>
                           <span style={{
-                            background: 'rgba(59,130,246,0.1)', color: '#60a5fa',
+                            background: 'rgba(59,130,246,0.1)', color: '#2563eb',
                             padding: '3px 8px', borderRadius: 6, fontSize: 12, fontWeight: 700
                           }}>
                             {order.items?.length || 0} món
@@ -269,7 +269,7 @@ const AdminOrders = () => {
                         <td>
                           <span style={{
                             fontSize: 11, fontWeight: 700, textTransform: 'uppercase',
-                            color: order.paymentMethod === 'cod' ? '#fbbf24' : '#60a5fa',
+                            color: order.paymentMethod === 'cod' ? '#d97706' : '#2563eb',
                             background: order.paymentMethod === 'cod' ? 'rgba(251,191,36,0.1)' : 'rgba(59,130,246,0.1)',
                             padding: '3px 8px', borderRadius: 6
                           }}>

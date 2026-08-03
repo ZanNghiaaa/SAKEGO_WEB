@@ -276,7 +276,7 @@ const AdminUsers = () => {
               {/* Avatar + name */}
               <div style={{
                 display: 'flex', alignItems: 'center', gap: 20, marginBottom: 24,
-                padding: '20px', background: 'rgba(255,255,255,0.03)',
+                padding: '20px', background: 'var(--admin-surface-2)',
                 border: '1px solid var(--admin-border)', borderRadius: 12
               }}>
                 <div style={{
@@ -289,7 +289,7 @@ const AdminUsers = () => {
                   {(selectedUser.fullname || 'U')[0].toUpperCase()}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 22, fontWeight: 800, color: 'white' }}>
+                  <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--admin-text)' }}>
                     {selectedUser.fullname}
                   </div>
                   <div style={{ fontSize: 13, color: 'var(--admin-text-muted)', marginBottom: 8 }}>
@@ -352,11 +352,11 @@ const AdminUsers = () => {
                     {selectedUserOrders.slice(0, 5).map((o, i) => (
                       <div key={i} style={{
                         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                        padding: '10px 14px', background: 'rgba(255,255,255,0.03)',
+                        padding: '10px 14px', background: 'var(--admin-surface-2)',
                         border: '1px solid var(--admin-border)', borderRadius: 8
                       }}>
                         <div>
-                          <div style={{ fontWeight: 700, fontSize: 13, color: 'white' }}>
+                          <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--admin-text)' }}>
                             #{String(o.orderNumber || o.id).slice(-6).toUpperCase()}
                           </div>
                           <div style={{ fontSize: 11, color: 'var(--admin-text-muted)' }}>
@@ -364,7 +364,7 @@ const AdminUsers = () => {
                           </div>
                         </div>
                         <div style={{ textAlign: 'right' }}>
-                          <div style={{ fontWeight: 700, color: '#4ade80', fontSize: 13 }}>
+                          <div style={{ fontWeight: 700, color: '#16a34a', fontSize: 13 }}>
                             {(o.totalAmount || 0).toLocaleString('vi-VN')}đ
                           </div>
                           <div style={{

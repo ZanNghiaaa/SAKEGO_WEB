@@ -365,7 +365,7 @@ const AdminProducts = () => {
                     </td>
                     <td>
                       <div>
-                        <div style={{ fontWeight: 700, color: 'white', fontSize: 13, marginBottom: 4 }}>
+                        <div style={{ fontWeight: 700, color: 'var(--admin-text)', fontSize: 13, marginBottom: 4 }}>
                           {product.name}
                         </div>
                         <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
