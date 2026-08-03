@@ -110,9 +110,11 @@ const AdminLayout = () => {
       <aside className={`admin-sidebar ${showMobileSidebar ? 'mobile-open' : ''}`}>
         <div className="admin-sidebar-header">
           <div className="admin-logo">
-            <i className="fas fa-leaf"></i>
+            <div className="admin-logo-icon">
+              <i className="fas fa-leaf" />
+            </div>
             <div className="admin-logo-text">
-              <h2>SaKeFruit</h2>
+              <h2>SakeFruit</h2>
               <span>Admin Panel</span>
             </div>
           </div>

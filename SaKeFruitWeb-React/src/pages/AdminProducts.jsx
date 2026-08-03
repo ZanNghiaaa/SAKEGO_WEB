@@ -251,9 +251,9 @@ const AdminProducts = () => {
     <div className="admin-products">
       {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
-          <div style={{ textAlign: 'center' }}>
-            <i className="fas fa-spinner fa-spin" style={{ fontSize: '48px', color: '#7CB342', marginBottom: '20px' }}></i>
-            <p style={{ color: '#666', fontSize: '16px' }}>Đang tải sản phẩm...</p>
+          <div style={{ textAlign: 'center', color: 'var(--admin-text-muted)' }}>
+            <i className="fas fa-spinner fa-spin" style={{ fontSize: '40px', color: '#7CB342', marginBottom: '16px', display: 'block' }} />
+            <p style={{ margin: 0 }}>Đang tải sản phẩm...</p>
           </div>
         </div>
       ) : (
@@ -346,38 +346,78 @@ const AdminProducts = () => {
               <tbody>
                 {filteredProducts.map(product => (
                   <tr key={product.id}>
-                    <td><strong>#{product.id}</strong></td>
                     <td>
-                      <img 
-                        src={product.image} 
+                      <span style={{
+                        fontFamily: 'monospace', fontSize: 11, color: 'var(--green-500)',
+                        background: 'rgba(124,179,66,0.1)', padding: '2px 7px', borderRadius: 5
+                      }}>
+                        #{String(product._id || product.id).slice(-6)}
+                      </span>
+                    </td>
+                    <td>
+                      <img
+                        src={product.image}
                         alt={product.name}
                         className="product-thumbnail"
-                        style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px' }}
+                        style={{ width: 52, height: 52, objectFit: 'cover', borderRadius: 8, border: '1px solid var(--admin-border)' }}
+                        onError={e => { e.target.style.display = 'none'; }}
                       />
                     </td>
                     <td>
                       <div>
-                        <strong>{product.name}</strong>
-                        {product.isTrial && (
-                          <span className="badge-trial" style={{ marginLeft: '8px', fontSize: '11px', padding: '2px 8px', background: '#E91E63', color: 'white', borderRadius: '4px' }}>
-                            Dùng thử
-                          </span>
-                        )}
-                        {product.isReadyToEat && (
-                          <span className="badge-ready" style={{ marginLeft: '8px', fontSize: '11px', padding: '2px 8px', background: '#4CAF50', color: 'white', borderRadius: '4px' }}>
-                            Ăn liền
-                          </span>
+                        <div style={{ fontWeight: 700, color: 'white', fontSize: 13, marginBottom: 4 }}>
+                          {product.name}
+                        </div>
+                        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                          {product.isTrial && (
+                            <span style={{
+                              fontSize: 10, padding: '2px 7px',
+                              background: 'rgba(233,30,99,0.15)', color: '#f472b6',
+                              borderRadius: 4, fontWeight: 700
+                            }}>Dùng thử</span>
+                          )}
+                          {product.isReadyToEat && (
+                            <span style={{
+                              fontSize: 10, padding: '2px 7px',
+                              background: 'rgba(34,197,94,0.15)', color: '#4ade80',
+                              borderRadius: 4, fontWeight: 700
+                            }}>Ăn liền</span>
+                          )}
+                          {product.isCombo && (
+                            <span style={{
+                              fontSize: 10, padding: '2px 7px',
+                              background: 'rgba(168,85,247,0.15)', color: '#c084fc',
+                              borderRadius: 4, fontWeight: 700
+                            }}>Combo</span>
+                          )}
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span style={{
+                        fontSize: 12, fontWeight: 600, color: 'var(--admin-text-dim)',
+                        background: 'rgba(255,255,255,0.05)', padding: '3px 8px', borderRadius: 5
+                      }}>
+                        {getCategoryName(product.category)}
+                      </span>
+                    </td>
+                    <td>
+                      <div>
+                        <strong className="text-success" style={{ fontSize: 14 }}>
+                          {product.price.toLocaleString('vi-VN')}đ
+                        </strong>
+                        {product.originalPrice && product.originalPrice > product.price && (
+                          <div style={{ fontSize: 11, color: 'var(--admin-text-muted)', textDecoration: 'line-through' }}>
+                            {product.originalPrice.toLocaleString('vi-VN')}đ
+                          </div>
                         )}
                       </div>
                     </td>
-                    <td>{getCategoryName(product.category)}</td>
                     <td>
-                      <strong className="text-success">
-                        {product.price.toLocaleString('vi-VN')}đ
-                      </strong>
-                    </td>
-                    <td>
-                      <span className={product.stock > 50 ? 'text-success' : product.stock > 0 ? 'text-warning' : 'text-danger'}>
+                      <span style={{
+                        fontWeight: 700, fontSize: 14,
+                        color: product.stock > 50 ? '#4ade80' : product.stock > 0 ? '#fbbf24' : '#f87171'
+                      }}>
                         {product.stock}
                       </span>
                     </td>
