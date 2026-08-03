@@ -5,7 +5,6 @@ import { useLoading } from '../hooks/useLoading';
 import Loading from '../components/Loading';
 import { getCurrentUser } from '../controllers/UserController';
 import { createOrder, CAN_THO_DISTRICTS } from '../controllers/OrderController';
-import emailjs from '@emailjs/browser';
 
 const Checkout = () => {
   const { cartItems, getTotal, clearCart } = useCart();
@@ -90,24 +89,6 @@ const Checkout = () => {
         };
 
         const newOrder = await createOrder(orderData);
-
-        // Send email in background (non-blocking)
-        try {
-          emailjs.init('ogExQkHNH2O6_vHj3');
-          const templateParams = {
-            from_name: 'SaKeFruit System',
-            from_email: formData.email,
-            to_email: formData.email,
-            email: formData.email,
-            user_email: formData.email,
-            from_phone: formData.phone,
-            subject: `Xác nhận đơn hàng ${newOrder.id || newOrder.orderNumber}`,
-            message: `Xin chào ${formData.fullname},\n\nCảm ơn bạn đã đặt hàng tại SaKeFruit!\nMã đơn hàng của bạn là: ${newOrder.orderNumber}\nTổng tiền: ${getTotal().toLocaleString('vi-VN')}đ\n\nĐơn hàng sẽ được giao đến: ${formData.address}, ${formData.ward}, ${formData.district}.\n\nChúng tôi sẽ sớm liên hệ với bạn để giao hàng.\n\nTrân trọng,\nSaKeFruit`
-          };
-          emailjs.send('service_l0u0fer', 'template_t2gxwg9', templateParams).catch(e => console.error('Email send fail:', e));
-        } catch (e) {
-          console.error('Email error:', e);
-        }
 
         // Navigate trước, sau đó clearCart để tránh render trang giỏ trống
         navigate('/profile', {
