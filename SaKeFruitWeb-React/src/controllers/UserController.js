@@ -139,7 +139,22 @@ export const updateUserProfile = async (userId, updates) => {
 // Backward compat (legacy functions)
 // -------------------------------------------------------
 export const initializeUsers = () => {}; // No-op (API handles this)
-export const getUsers = () => []; // Not needed on frontend
+export const getUsers = async () => {
+  try {
+    const res = await fetch(`${API_URL}/admin/users`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+    return data.users;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    return [];
+  }
+};
 export const getUserByCredentials = () => null;
 export const registerUserLocal = () => { throw new Error('Use registerUser instead'); };
 export const loginUserLocal = () => { throw new Error('Use loginUser instead'); };

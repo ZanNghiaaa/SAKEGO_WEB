@@ -15,7 +15,8 @@ const AdminUsers = () => {
   const loadUsers = async () => {
     setLoading(true);
     try {
-      setUsers(getUsers());
+      const fetchedUsers = await getUsers();
+      setUsers(fetchedUsers);
       const orders = await getAllOrders();
       setAllOrders(orders);
     } catch (err) {
