@@ -489,10 +489,10 @@ const AdminProducts = () => {
                     <label>Hình ảnh</label>
                     
                     {/* Image Preview */}
-                    {imagePreview && (
+                    {(imagePreview || formData.image) && (
                       <div style={{ marginBottom: '15px', position: 'relative', display: 'inline-block' }}>
                         <img 
-                          src={imagePreview} 
+                          src={imageFile ? imagePreview : formData.image} 
                           alt="Preview" 
                           style={{ 
                             width: '200px', 
