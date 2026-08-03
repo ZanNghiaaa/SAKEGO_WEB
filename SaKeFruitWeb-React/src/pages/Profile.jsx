@@ -98,12 +98,12 @@ const Profile = () => {
           {orderSuccess && (
             <div style={{
               background: 'linear-gradient(135deg, #22c55e, #16a34a)',
-              color: '#fff', borderRadius: '16px', padding: '20px 28px',
-              marginBottom: '28px', display: 'flex', alignItems: 'center', gap: '16px',
-              boxShadow: '0 4px 20px rgba(34,197,94,0.35)'
+              color: '#fff', borderRadius: '16px', padding: '20px',
+              marginBottom: '28px', display: 'flex', alignItems: 'center', gap: '12px',
+              boxShadow: '0 4px 20px rgba(34,197,94,0.35)', flexWrap: 'nowrap'
             }}>
-              <div style={{ fontSize: '40px' }}>🎉</div>
-              <div>
+              <div style={{ fontSize: '40px', flexShrink: 0 }}>🎉</div>
+              <div style={{ flex: 1, minWidth: 0, wordBreak: 'break-word' }}>
                 <div style={{ fontSize: '18px', fontWeight: 700, marginBottom: '4px' }}>
                   Đặt hàng thành công!
                 </div>
