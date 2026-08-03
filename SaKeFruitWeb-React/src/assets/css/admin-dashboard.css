@@ -742,7 +742,7 @@
 .admin-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 
 .admin-table thead th {
-  padding: 11px 14px;
+  padding: 11px 10px;
   text-align: left;
   font-weight: 700;
   font-size: 10px;
@@ -762,7 +762,7 @@
 .admin-table tbody tr:hover { background: #f8fdf4; }
 .admin-table tbody tr:last-child { border-bottom: none; }
 
-.admin-table tbody td { padding: 13px 14px; color: var(--admin-text-dim); vertical-align: middle; }
+.admin-table tbody td { padding: 12px 10px; color: var(--admin-text-dim); vertical-align: middle; }
 .admin-table tbody td strong { color: var(--admin-text); }
 
 .text-success { color: #16a34a !important; }

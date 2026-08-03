@@ -237,13 +237,13 @@ const AdminOrders = () => {
                               <div style={{ fontWeight: 700, color: 'var(--admin-text)', fontSize: 13 }}>
                                 {order.customerInfo?.fullname || order.customerName || '—'}
                               </div>
-                              <div style={{ fontSize: 11, color: 'var(--admin-text-muted)' }}>
+                              <div style={{ fontSize: 11, color: 'var(--admin-text-muted)', maxWidth: 130, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                 {order.customerInfo?.email || order.customerEmail || ''}
                               </div>
                             </div>
                           </div>
                         </td>
-                        <td style={{ fontSize: 13 }}>{order.customerInfo?.phone || '—'}</td>
+                        <td style={{ fontSize: 13, whiteSpace: 'nowrap' }}>{order.customerInfo?.phone || '—'}</td>
                         <td>
                           <div style={{
                             fontSize: 12, color: 'var(--admin-text-muted)',
@@ -261,22 +261,22 @@ const AdminOrders = () => {
                             {order.items?.length || 0} món
                           </span>
                         </td>
-                        <td>
+                        <td style={{ whiteSpace: 'nowrap' }}>
                           <strong className="text-success" style={{ fontSize: 14 }}>
                             {(order.totalAmount || 0).toLocaleString('vi-VN')}đ
                           </strong>
                         </td>
-                        <td>
+                        <td style={{ whiteSpace: 'nowrap' }}>
                           <span style={{
                             fontSize: 11, fontWeight: 700, textTransform: 'uppercase',
                             color: order.paymentMethod === 'cod' ? '#d97706' : '#2563eb',
                             background: order.paymentMethod === 'cod' ? 'rgba(251,191,36,0.1)' : 'rgba(59,130,246,0.1)',
-                            padding: '3px 8px', borderRadius: 6
+                            padding: '3px 8px', borderRadius: 6, display: 'inline-block'
                           }}>
                             {order.paymentMethod === 'cod' ? 'COD' : 'Chuyển khoản'}
                           </span>
                         </td>
-                        <td>
+                        <td style={{ whiteSpace: 'nowrap' }}>
                           <span className={`status-badge ${getStatusClass(order.status)}`}>
                             {ORDER_STATUS_TEXT[order.status]}
                           </span>
@@ -287,11 +287,11 @@ const AdminOrders = () => {
                             </div>
                           )}
                         </td>
-                        <td style={{ fontSize: 12, color: 'var(--admin-text-muted)' }}>
+                        <td style={{ fontSize: 12, color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>
                           <div>{new Date(order.createdAt).toLocaleDateString('vi-VN')}</div>
                           <div style={{ fontSize: 11 }}>{new Date(order.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</div>
                         </td>
-                        <td>
+                        <td style={{ whiteSpace: 'nowrap' }}>
                           <div className="action-buttons">
                             <button
                               className="btn-action btn-action-view"
