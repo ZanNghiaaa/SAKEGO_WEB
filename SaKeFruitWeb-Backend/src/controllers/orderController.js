@@ -106,7 +106,7 @@ export const createOrder = async (req, res, next) => {
     // Send confirmation email to customer (Non-blocking)
     sendEmail({
       email: customerInfo.email,
-      subject: '✅ Xác nhận đơn hàng - SaKeFruit',
+      subject: '✅ Xác nhận đơn hàng - SaKeGo',
       html: orderConfirmationEmail(order)
     });
     

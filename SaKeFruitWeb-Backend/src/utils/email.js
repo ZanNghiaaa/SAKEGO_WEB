@@ -26,7 +26,7 @@ export const sendEmail = async (options) => {
   const transporter = getTransporter();
   
   const mailOptions = {
-    from: `SaKeFruit <${process.env.EMAIL_USER}>`,
+    from: `SaKeGo <${process.env.EMAIL_USER}>`,
     to: options.email,
     subject: options.subject,
     html: options.html
@@ -149,15 +149,15 @@ export const orderConfirmationEmail = (order) => {
         </div>
         
         <div class="footer">
-          <p><strong>Cảm ơn bạn đã tin tưởng và ủng hộ SaKeFruit!</strong></p>
+          <p><strong>Cảm ơn bạn đã tin tưởng và ủng hộ SaKeGo!</strong></p>
           <div class="contact-info">
             <p>Nếu có bất kỳ thắc mắc nào, vui lòng liên hệ:</p>
             <p>📞 Hotline: <a href="tel:0392020136">039 2020 136</a></p>
-            <p>📧 Email: <a href="mailto:support@sakefruit.com">support@sakefruit.com</a></p>
-            <p>🌐 Website: <a href="http://localhost:3000">www.sakefruit.com</a></p>
+            <p>📧 Email: <a href="mailto:support@SaKeGo.com">support@SaKeGo.com</a></p>
+            <p>🌐 Website: <a href="http://localhost:3000">www.SaKeGo.com</a></p>
           </div>
           <p style="margin-top: 20px; color: #999; font-size: 12px;">
-            © 2026 SaKeFruit - Trái Sa Kê Tươi Ngon Từ Vườn
+            © 2026 SaKeGo - Trái Sa Kê Tươi Ngon Từ Vườn
           </p>
         </div>
       </div>
@@ -194,7 +194,7 @@ export const resetPasswordEmail = (fullname, resetUrl) => {
     <body>
       <div class="container">
         <div class="header">
-          <h1> SaKeFruit</h1>
+          <h1> SaKeGo</h1>
           <h2>Đặt lại mật khẩu</h2>
         </div>
         
@@ -203,7 +203,7 @@ export const resetPasswordEmail = (fullname, resetUrl) => {
             <p>Xin chào <strong>${fullname}</strong>,</p>
           </div>
           
-          <p>Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn tại <strong>SaKeFruit</strong>.</p>
+          <p>Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn tại <strong>SaKeGo</strong>.</p>
           
           <div class="warning-box">
             <strong>⚠️ Lưu ý quan trọng:</strong><br>
@@ -225,7 +225,7 @@ export const resetPasswordEmail = (fullname, resetUrl) => {
             <strong>🔐 Bảo mật tài khoản:</strong>
             <ul style="margin: 10px 0; padding-left: 20px;">
               <li>Không chia sẻ link này với bất kỳ ai</li>
-              <li>SaKeFruit không bao giờ yêu cầu mật khẩu qua email hoặc điện thoại</li>
+              <li>SaKeGo không bao giờ yêu cầu mật khẩu qua email hoặc điện thoại</li>
               <li>Nếu bạn không yêu cầu đặt lại mật khẩu, hãy liên hệ ngay với chúng tôi</li>
             </ul>
           </div>
@@ -235,11 +235,11 @@ export const resetPasswordEmail = (fullname, resetUrl) => {
           <p><strong>Cần hỗ trợ?</strong></p>
           <div class="contact-info">
             <p>📞 Hotline: <a href="tel:0123456789">0123 456 789</a></p>
-            <p>📧 Email: <a href="mailto:support@sakefruit.com">support@sakefruit.com</a></p>
-            <p>🌐 Website: <a href="http://localhost:3000">www.sakefruit.com</a></p>
+            <p>📧 Email: <a href="mailto:support@SaKeGo.com">support@SaKeGo.com</a></p>
+            <p>🌐 Website: <a href="http://localhost:3000">www.SaKeGo.com</a></p>
           </div>
           <p style="margin-top: 20px; color: #999; font-size: 12px;">
-            © 2026 SaKeFruit - Trái Sa Kê Tươi Ngon Từ Vườn
+            © 2026 SaKeGo - Trái Sa Kê Tươi Ngon Từ Vườn
           </p>
         </div>
       </div>
@@ -278,7 +278,7 @@ export const tempPasswordEmail = (fullname, tempPassword) => {
     <body>
       <div class="container">
         <div class="header">
-          <h1> SaKeFruit</h1>
+          <h1> SaKeGo</h1>
           <h2>Mật khẩu tạm thời</h2>
         </div>
         
@@ -287,7 +287,7 @@ export const tempPasswordEmail = (fullname, tempPassword) => {
             <p>Xin chào <strong>${fullname}</strong>,</p>
           </div>
           
-          <p>Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn tại <strong>SaKeFruit</strong>.</p>
+          <p>Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn tại <strong>SaKeGo</strong>.</p>
           
           <p>Dưới đây là <strong>mật khẩu tạm thời</strong> để bạn đăng nhập vào hệ thống:</p>
 
@@ -302,7 +302,7 @@ export const tempPasswordEmail = (fullname, tempPassword) => {
           <div class="info-box">
             <strong>📋 Hướng dẫn đăng nhập:</strong>
             <ol style="margin: 10px 0; padding-left: 20px;">
-              <li>Truy cập trang đăng nhập SaKeFruit</li>
+              <li>Truy cập trang đăng nhập SaKeGo</li>
               <li>Nhập email của bạn</li>
               <li>Nhập mật khẩu tạm thời ở trên</li>
               <li>Sau khi đăng nhập, vào <strong>Tài khoản</strong> → <strong>Đổi mật khẩu</strong></li>
@@ -321,7 +321,7 @@ export const tempPasswordEmail = (fullname, tempPassword) => {
           <div class="security-note">
             <strong>🔐 Bảo mật tài khoản:</strong>
             <ul style="margin: 10px 0; padding-left: 20px;">
-              <li>SaKeFruit không bao giờ yêu cầu mật khẩu qua điện thoại</li>
+              <li>SaKeGo không bao giờ yêu cầu mật khẩu qua điện thoại</li>
               <li>Đổi mật khẩu thường xuyên để bảo vệ tài khoản</li>
               <li>Sử dụng mật khẩu mạnh: 8+ ký tự, có chữ hoa, chữ thường, số</li>
             </ul>
@@ -332,11 +332,11 @@ export const tempPasswordEmail = (fullname, tempPassword) => {
           <p><strong>Cần hỗ trợ?</strong></p>
           <div class="contact-info">
             <p>📞 Hotline: <a href="tel:0123456789">0123 456 789</a></p>
-            <p>📧 Email: <a href="mailto:support@sakefruit.com">support@sakefruit.com</a></p>
-            <p>🌐 Website: <a href="http://localhost:3000">www.sakefruit.com</a></p>
+            <p>📧 Email: <a href="mailto:support@SaKeGo.com">support@SaKeGo.com</a></p>
+            <p>🌐 Website: <a href="http://localhost:3000">www.SaKeGo.com</a></p>
           </div>
           <p style="margin-top: 20px; color: #999; font-size: 12px;">
-            © 2026 SaKeFruit - Trái Sa Kê Tươi Ngon Từ Vườn
+            © 2026 SaKeGo - Trái Sa Kê Tươi Ngon Từ Vườn
           </p>
         </div>
       </div>
