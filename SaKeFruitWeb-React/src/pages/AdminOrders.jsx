@@ -234,20 +234,20 @@ const AdminOrders = () => {
                               {(order.customerInfo?.fullname || order.customerName || 'K')[0].toUpperCase()}
                             </div>
                             <div>
-                              <div style={{ fontWeight: 700, color: 'var(--admin-text)', fontSize: 13 }}>
+                              <div style={{ fontWeight: 700, color: 'var(--admin-text)', fontSize: 12 }}>
                                 {order.customerInfo?.fullname || order.customerName || '—'}
                               </div>
-                              <div style={{ fontSize: 11, color: 'var(--admin-text-muted)', maxWidth: 130, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              <div style={{ fontSize: 10, color: 'var(--admin-text-muted)', maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                 {order.customerInfo?.email || order.customerEmail || ''}
                               </div>
                             </div>
                           </div>
                         </td>
-                        <td style={{ fontSize: 13, whiteSpace: 'nowrap' }}>{order.customerInfo?.phone || '—'}</td>
+                        <td style={{ fontSize: 12, whiteSpace: 'nowrap' }}>{order.customerInfo?.phone || '—'}</td>
                         <td>
                           <div style={{
-                            fontSize: 12, color: 'var(--admin-text-muted)',
-                            maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
+                            fontSize: 11, color: 'var(--admin-text-muted)',
+                            maxWidth: 110, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
                           }}>
                             {[order.customerInfo?.address, order.customerInfo?.ward, order.customerInfo?.district]
                               .filter(Boolean).join(', ') || '—'}
@@ -262,13 +262,13 @@ const AdminOrders = () => {
                           </span>
                         </td>
                         <td style={{ whiteSpace: 'nowrap' }}>
-                          <strong className="text-success" style={{ fontSize: 14 }}>
+                          <strong className="text-success" style={{ fontSize: 13 }}>
                             {(order.totalAmount || 0).toLocaleString('vi-VN')}đ
                           </strong>
                         </td>
                         <td style={{ whiteSpace: 'nowrap' }}>
                           <span style={{
-                            fontSize: 11, fontWeight: 700, textTransform: 'uppercase',
+                            fontSize: 10, fontWeight: 700, textTransform: 'uppercase',
                             color: order.paymentMethod === 'cod' ? '#d97706' : '#2563eb',
                             background: order.paymentMethod === 'cod' ? 'rgba(251,191,36,0.1)' : 'rgba(59,130,246,0.1)',
                             padding: '3px 8px', borderRadius: 6, display: 'inline-block'
@@ -287,9 +287,9 @@ const AdminOrders = () => {
                             </div>
                           )}
                         </td>
-                        <td style={{ fontSize: 12, color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>
+                        <td style={{ fontSize: 11, color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>
                           <div>{new Date(order.createdAt).toLocaleDateString('vi-VN')}</div>
-                          <div style={{ fontSize: 11 }}>{new Date(order.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</div>
+                          <div style={{ fontSize: 10 }}>{new Date(order.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</div>
                         </td>
                         <td style={{ whiteSpace: 'nowrap' }}>
                           <div className="action-buttons">
