@@ -361,7 +361,7 @@ const Profile = () => {
                           <div className="order-header">
                             <div className="order-id">
                               <i className="fas fa-receipt"></i>
-                              <strong>{order.id}</strong>
+                              <strong>{order.orderNumber || `#${order.id.slice(-8).toUpperCase()}`}</strong>
                             </div>
                             <span className={`order-status ${getStatusClass(order.status)}`}>
                               {ORDER_STATUS_TEXT[order.status]}
