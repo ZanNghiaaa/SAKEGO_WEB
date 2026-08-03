@@ -1,11 +1,11 @@
-import User from '../models/User.js';
+import userService from '../services/UserService.js';
 
 // @desc    Get all users (Admin only)
 // @route   GET /api/users
 // @access  Private/Admin
 export const getAllUsers = async (req, res, next) => {
   try {
-    const users = await User.find({}).sort({ createdAt: -1 });
+    const users = await userService.getAllUsers();
     
     res.json({
       success: true,
@@ -21,8 +21,15 @@ export const getAllUsers = async (req, res, next) => {
 // @access  Private
 export const getProfile = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await userService.getUserById(req.user.id);
     
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Người dùng không tồn tại!'
+      });
+    }
+
     res.json({
       success: true,
       user: user.toPublicJSON()
@@ -37,23 +44,7 @@ export const getProfile = async (req, res, next) => {
 // @access  Private
 export const updateProfile = async (req, res, next) => {
   try {
-    const { fullname, phone, address } = req.body;
-    
-    const user = await User.findById(req.user.id);
-    
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'Người dùng không tồn tại!'
-      });
-    }
-    
-    // Update fields
-    if (fullname) user.fullname = fullname;
-    if (phone) user.phone = phone;
-    if (address !== undefined) user.address = address;
-    
-    await user.save();
+    const user = await userService.updateProfile(req.user.id, req.body);
     
     res.json({
       success: true,
@@ -61,6 +52,9 @@ export const updateProfile = async (req, res, next) => {
       user: user.toPublicJSON()
     });
   } catch (error) {
+    if (error.message === 'Người dùng không tồn tại!') {
+      return res.status(404).json({ success: false, message: error.message });
+    }
     next(error);
   }
 };
@@ -72,27 +66,16 @@ export const changePassword = async (req, res, next) => {
   try {
     const { currentPassword, newPassword } = req.body;
     
-    const user = await User.findById(req.user.id).select('+password');
-    
-    // Check current password
-    const isMatch = await user.comparePassword(currentPassword);
-    
-    if (!isMatch) {
-      return res.status(400).json({
-        success: false,
-        message: 'Mật khẩu hiện tại không đúng!'
-      });
-    }
-    
-    // Update password
-    user.password = newPassword;
-    await user.save();
+    await userService.changePassword(req.user.id, currentPassword, newPassword);
     
     res.json({
       success: true,
       message: 'Đổi mật khẩu thành công!'
     });
   } catch (error) {
+    if (error.message === 'Người dùng không tồn tại!' || error.message === 'Mật khẩu hiện tại không đúng!') {
+      return res.status(400).json({ success: false, message: error.message });
+    }
     next(error);
   }
 };

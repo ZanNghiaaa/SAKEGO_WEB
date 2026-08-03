@@ -164,21 +164,21 @@ const Profile = () => {
 
               <div className="profile-actions">
                 <button 
-                  className="btn-action btn-primary"
+                  className="profile-btn-action btn-primary"
                   onClick={() => navigate('/cart')}
                 >
                   <i className="fas fa-shopping-cart"></i>
                   Giỏ hàng
                 </button>
                 <button 
-                  className="btn-action btn-secondary"
+                  className="profile-btn-action btn-secondary"
                   onClick={() => navigate('/products')}
                 >
                   <i className="fas fa-store"></i>
                   Tiếp tục mua sắm
                 </button>
                 <button 
-                  className="btn-action btn-danger"
+                  className="profile-btn-action btn-danger"
                   onClick={handleLogout}
                 >
                   <i className="fas fa-sign-out-alt"></i>

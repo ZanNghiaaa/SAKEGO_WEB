@@ -1,8 +1,4 @@
-import Order from '../models/Order.js';
-import Product from '../models/Product.js';
-import Notification from '../models/Notification.js';
-import { sendEmail, orderConfirmationEmail } from '../utils/email.js';
-import mongoose from 'mongoose';
+import orderService from '../services/OrderService.js';
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -11,104 +7,13 @@ export const createOrder = async (req, res, next) => {
   try {
     const { items, customerInfo, paymentMethod, notes } = req.body;
     
-    // Validate Can Tho address
-    const canThoDistricts = [
-      'Ninh Kiều', 'Bình Thủy', 'Cái Răng', 'Ô Môn',
-      'Thốt Nốt', 'Phong Điền', 'Cờ Đỏ', 'Vĩnh Thạnh', 'Thới Lai'
-    ];
-    
-    if (!canThoDistricts.includes(customerInfo.district)) {
-      return res.status(400).json({
-        success: false,
-        message: '⚠️ Hiện tại chúng tôi chỉ giao hàng tại TP. Cần Thơ!'
-      });
-    }
-    
-    // Calculate total and validate products
-    let totalAmount = 0;
-    const orderItems = [];
-    
-    for (const item of items) {
-      // Validate productId là MongoDB ObjectId hợp lệ
-      if (!item.productId || !mongoose.Types.ObjectId.isValid(item.productId)) {
-        return res.status(400).json({
-          success: false,
-          message: `Sản phẩm trong giỏ hàng không hợp lệ. Vui lòng làm mới trang và thêm sản phẩm lại!`
-        });
-      }
-
-      const product = await Product.findById(item.productId);
-      
-      if (!product) {
-        return res.status(404).json({
-          success: false,
-          message: `Sản phẩm ${item.productId} không tồn tại!`
-        });
-      }
-      
-      if (product.stock < item.quantity) {
-        return res.status(400).json({
-          success: false,
-          message: `Sản phẩm "${product.name}" không đủ số lượng trong kho!`
-        });
-      }
-      
-      orderItems.push({
-        productId: product._id,
-        name: product.name,
-        price: product.price,
-        quantity: item.quantity,
-        image: product.image,
-        category: product.category
-      });
-      
-      totalAmount += product.price * item.quantity;
-      
-      // Update product stock
-      await product.updateStock(item.quantity);
-    }
-    
-    // Create order
-    const order = await Order.create({
-      userId: req.user.id,
-      customerInfo: {
-        ...customerInfo,
-        notes: notes || ''
-      },
-      items: orderItems,
-      totalAmount,
-      paymentMethod: paymentMethod || 'cod',
-      statusHistory: [{
-        status: 'pending',
-        timestamp: new Date(),
-        note: 'Đơn hàng được tạo'
-      }]
-    });
-    
-    // Create notification for admin
-    await Notification.create({
-      type: 'new_order',
-      title: '🛒 Đơn hàng mới!',
-      message: `${customerInfo.fullname} đã đặt đơn hàng ${order.orderNumber}`,
-      recipientRole: 'admin',
-      orderId: order._id,
-      data: {
-        orderId: order.orderNumber,
-        customerName: customerInfo.fullname,
-        totalAmount: order.totalAmount,
-        itemCount: order.items.length
-      }
-    });
-    
-    // Populate product details
-    await order.populate('items.productId');
-    
-    // Send confirmation email to customer (Non-blocking)
-    sendEmail({
-      email: customerInfo.email,
-      subject: '✅ Xác nhận đơn hàng - SaKeGo',
-      html: orderConfirmationEmail(order)
-    });
+    const order = await orderService.createOrder(
+      req.user.id,
+      items,
+      customerInfo,
+      paymentMethod,
+      notes
+    );
     
     res.status(201).json({
       success: true,
@@ -116,6 +21,9 @@ export const createOrder = async (req, res, next) => {
       order
     });
   } catch (error) {
+    if (error.message.startsWith('⚠️') || error.message.includes('không hợp lệ') || error.message.includes('không tồn tại') || error.message.includes('không đủ số lượng')) {
+      return res.status(400).json({ success: false, message: error.message });
+    }
     next(error);
   }
 };
@@ -125,9 +33,7 @@ export const createOrder = async (req, res, next) => {
 // @access  Private
 export const getMyOrders = async (req, res, next) => {
   try {
-    const orders = await Order.find({ userId: req.user.id })
-      .populate('items.productId')
-      .sort({ createdAt: -1 });
+    const orders = await orderService.getMyOrders(req.user.id);
     
     res.json({
       success: true,
@@ -144,30 +50,19 @@ export const getMyOrders = async (req, res, next) => {
 // @access  Private
 export const getOrder = async (req, res, next) => {
   try {
-    const order = await Order.findById(req.params.id)
-      .populate('items.productId')
-      .populate('userId', 'fullname email phone');
-    
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: 'Đơn hàng không tồn tại!'
-      });
-    }
-    
-    // Check if user owns this order or is admin
-    if (order.userId._id.toString() !== req.user.id && req.user.role !== 'admin') {
-      return res.status(403).json({
-        success: false,
-        message: 'Không có quyền xem đơn hàng này!'
-      });
-    }
+    const order = await orderService.getOrder(req.params.id, req.user.id, req.user.role);
     
     res.json({
       success: true,
       order
     });
   } catch (error) {
+    if (error.message === 'Đơn hàng không tồn tại!') {
+      return res.status(404).json({ success: false, message: error.message });
+    }
+    if (error.message === 'Không có quyền xem đơn hàng này!') {
+      return res.status(403).json({ success: false, message: error.message });
+    }
     next(error);
   }
 };
@@ -177,52 +72,7 @@ export const getOrder = async (req, res, next) => {
 // @access  Private
 export const cancelOrder = async (req, res, next) => {
   try {
-    const order = await Order.findById(req.params.id);
-    
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: 'Đơn hàng không tồn tại!'
-      });
-    }
-    
-    // Check if user owns this order
-    if (order.userId.toString() !== req.user.id) {
-      return res.status(403).json({
-        success: false,
-        message: 'Không có quyền hủy đơn hàng này!'
-      });
-    }
-    
-    // Can only cancel pending or confirmed orders
-    if (!['pending', 'confirmed'].includes(order.status)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Không thể hủy đơn hàng ở trạng thái này!'
-      });
-    }
-    
-    // Restore product stock
-    for (const item of order.items) {
-      const product = await Product.findById(item.productId);
-      if (product) {
-        product.stock += item.quantity;
-        product.soldCount -= item.quantity;
-        await product.save();
-      }
-    }
-    
-    // Update order status
-    order.status = 'cancelled';
-    order.cancelledAt = Date.now();
-    order.cancelReason = req.body.reason || 'Khách hàng hủy đơn';
-    order.statusHistory.push({
-      status: 'cancelled',
-      timestamp: new Date(),
-      note: order.cancelReason
-    });
-    
-    await order.save();
+    const order = await orderService.cancelOrder(req.params.id, req.user.id, req.body.reason);
     
     res.json({
       success: true,
@@ -230,6 +80,15 @@ export const cancelOrder = async (req, res, next) => {
       order
     });
   } catch (error) {
+    if (error.message === 'Đơn hàng không tồn tại!') {
+      return res.status(404).json({ success: false, message: error.message });
+    }
+    if (error.message === 'Không có quyền hủy đơn hàng này!') {
+      return res.status(403).json({ success: false, message: error.message });
+    }
+    if (error.message === 'Không thể hủy đơn hàng ở trạng thái này!') {
+      return res.status(400).json({ success: false, message: error.message });
+    }
     next(error);
   }
 };

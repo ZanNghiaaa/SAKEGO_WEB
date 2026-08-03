@@ -1,10 +1,5 @@
-import User from '../models/User.js';
-import { generateToken } from '../middleware/auth.js';
-import { sendEmail, resetPasswordEmail, tempPasswordEmail } from '../utils/email.js';
-import crypto from 'crypto';
-import { OAuth2Client } from 'google-auth-library';
-
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+import authService from '../services/AuthService.js';
+import userService from '../services/UserService.js';
 
 // @desc    Register new user
 // @route   POST /api/auth/register
@@ -13,30 +8,7 @@ export const register = async (req, res, next) => {
   try {
     const { email, password, fullname, phone, address } = req.body;
     
-    // Check if user already exists
-    const existingUser = await User.findOne({
-      $or: [{ email }, { username: email.split('@')[0] }]
-    });
-    
-    if (existingUser) {
-      return res.status(400).json({
-        success: false,
-        message: 'Email hoặc tên đăng nhập đã tồn tại!'
-      });
-    }
-    
-    // Create user
-    const user = await User.create({
-      username: email.split('@')[0], // Generate username from email
-      email,
-      password,
-      fullname,
-      phone,
-      address: address || ''
-    });
-    
-    // Generate token
-    const token = generateToken(user._id);
+    const { user, token } = await authService.register(email, password, fullname, phone, address);
     
     res.status(201).json({
       success: true,
@@ -45,6 +17,9 @@ export const register = async (req, res, next) => {
       user: user.toPublicJSON()
     });
   } catch (error) {
+    if (error.message === 'Email hoặc tên đăng nhập đã tồn tại!') {
+      return res.status(400).json({ success: false, message: error.message });
+    }
     next(error);
   }
 };
@@ -56,48 +31,7 @@ export const login = async (req, res, next) => {
   try {
     const { emailOrUsername, password } = req.body;
     
-    // Normalize to lowercase for comparison
-    const normalizedInput = emailOrUsername.toLowerCase().trim();
-    
-    // Find user by email or username
-    const user = await User.findOne({
-      $or: [
-        { email: normalizedInput },
-        { username: normalizedInput }
-      ]
-    }).select('+password');
-    
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: 'Tài khoản không tồn tại!'
-      });
-    }
-    
-    // Check password
-    const isPasswordMatch = await user.comparePassword(password);
-    
-    if (!isPasswordMatch) {
-      return res.status(401).json({
-        success: false,
-        message: 'Mật khẩu không đúng!'
-      });
-    }
-    
-    // Check if user is active
-    if (!user.isActive) {
-      return res.status(401).json({
-        success: false,
-        message: 'Tài khoản đã bị vô hiệu hóa!'
-      });
-    }
-    
-    // Update last login
-    user.lastLogin = Date.now();
-    await user.save();
-    
-    // Generate token
-    const token = generateToken(user._id);
+    const { user, token } = await authService.login(emailOrUsername, password);
     
     res.json({
       success: true,
@@ -106,6 +40,9 @@ export const login = async (req, res, next) => {
       user: user.toPublicJSON()
     });
   } catch (error) {
+    if (error.message === 'Tài khoản không tồn tại!' || error.message === 'Mật khẩu không đúng!' || error.message === 'Tài khoản đã bị vô hiệu hóa!') {
+      return res.status(401).json({ success: false, message: error.message });
+    }
     next(error);
   }
 };
@@ -115,7 +52,7 @@ export const login = async (req, res, next) => {
 // @access  Private
 export const getMe = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await userService.getUserById(req.user.id);
     
     res.json({
       success: true,
@@ -131,9 +68,6 @@ export const getMe = async (req, res, next) => {
 // @access  Private
 export const logout = async (req, res, next) => {
   try {
-    // In JWT, logout is handled on frontend by removing token
-    // But we can add additional logic here if needed
-    
     res.json({
       success: true,
       message: 'Đăng xuất thành công!'
@@ -148,51 +82,20 @@ export const logout = async (req, res, next) => {
 // @access  Public
 export const forgotPassword = async (req, res, next) => {
   try {
-    const { email } = req.body;
+    await authService.forgotPassword(req.body.email);
     
-    if (!email) {
-      return res.status(400).json({
-        success: false,
-        message: 'Vui lòng nhập email!'
-      });
-    }
-    
-    const user = await User.findOne({ email: email.toLowerCase().trim() }).select('+password');
-    
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'Không tìm thấy tài khoản với email này!'
-      });
-    }
-    
-    // Generate temporary password (8 characters: letters + numbers)
-    const tempPassword = crypto.randomBytes(4).toString('hex').toUpperCase();
-    
-    // Update user password with temporary password
-    user.password = tempPassword;
-    await user.save();
-    
-    try {
-      await sendEmail({
-        email: user.email,
-        subject: 'Mật khẩu tạm thời - SaKeFruit',
-        html: tempPasswordEmail(user.fullname, tempPassword)
-      });
-      
-      res.json({
-        success: true,
-        message: 'Mật khẩu tạm thời đã được gửi về email của bạn!'
-      });
-    } catch (error) {
-      console.error('Error sending email:', error);
-      
-      return res.status(500).json({
-        success: false,
-        message: 'Không thể gửi email. Vui lòng thử lại sau!'
-      });
-    }
+    res.json({
+      success: true,
+      message: 'Mật khẩu tạm thời đã được gửi về email của bạn!'
+    });
   } catch (error) {
+    if (error.message === 'Vui lòng nhập email!' || error.message === 'Không tìm thấy tài khoản với email này!') {
+      const status = error.message === 'Vui lòng nhập email!' ? 400 : 404;
+      return res.status(status).json({ success: false, message: error.message });
+    }
+    if (error.message === 'Không thể gửi email. Vui lòng thử lại sau!') {
+      return res.status(500).json({ success: false, message: error.message });
+    }
     next(error);
   }
 };
@@ -202,41 +105,7 @@ export const forgotPassword = async (req, res, next) => {
 // @access  Public
 export const resetPassword = async (req, res, next) => {
   try {
-    const { password } = req.body;
-    
-    if (!password || password.length < 6) {
-      return res.status(400).json({
-        success: false,
-        message: 'Mật khẩu phải có ít nhất 6 ký tự!'
-      });
-    }
-    
-    // Get hashed token
-    const resetPasswordToken = crypto
-      .createHash('sha256')
-      .update(req.params.token)
-      .digest('hex');
-    
-    const user = await User.findOne({
-      resetPasswordToken,
-      resetPasswordExpire: { $gt: Date.now() }
-    });
-    
-    if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: 'Link đặt lại mật khẩu không hợp lệ hoặc đã hết hạn!'
-      });
-    }
-    
-    // Set new password
-    user.password = password;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
-    await user.save();
-    
-    // Generate new token
-    const token = generateToken(user._id);
+    const { user, token } = await authService.resetPassword(req.params.token, req.body.password);
     
     res.json({
       success: true,
@@ -245,6 +114,9 @@ export const resetPassword = async (req, res, next) => {
       user: user.toPublicJSON()
     });
   } catch (error) {
+    if (error.message === 'Mật khẩu phải có ít nhất 6 ký tự!' || error.message === 'Link đặt lại mật khẩu không hợp lệ hoặc đã hết hạn!') {
+      return res.status(400).json({ success: false, message: error.message });
+    }
     next(error);
   }
 };
@@ -254,53 +126,7 @@ export const resetPassword = async (req, res, next) => {
 // @access  Public
 export const googleAuth = async (req, res, next) => {
   try {
-    const { credential } = req.body;
-    if (!credential) {
-      return res.status(400).json({ success: false, message: 'Thiếu credential' });
-    }
-
-    const ticket = await client.verifyIdToken({
-      idToken: credential,
-      audience: process.env.GOOGLE_CLIENT_ID
-    });
-
-    const payload = ticket.getPayload();
-    const { sub, email, name, picture } = payload;
-
-    // Check if user exists by googleId
-    let user = await User.findOne({ googleId: sub });
-
-    if (!user) {
-      // Check if user exists by email (link accounts if so)
-      user = await User.findOne({ email });
-
-      if (user) {
-        // Link googleId to existing user
-        user.googleId = sub;
-        if (!user.avatar) user.avatar = picture;
-        await user.save();
-      } else {
-        // Create new user
-        // Chú ý: sđt bắt buộc ở schema gốc, nên tạo một default
-        user = await User.create({
-          googleId: sub,
-          username: email.split('@')[0] + '_' + Math.random().toString(36).substring(2, 6),
-          email,
-          fullname: name,
-          avatar: picture,
-          phone: '0000000000', // Sẽ được yêu cầu cập nhật sau
-          address: '',
-          isActive: true
-        });
-      }
-    }
-
-    // Update last login
-    user.lastLogin = Date.now();
-    await user.save();
-
-    // Generate token
-    const token = generateToken(user._id);
+    const { user, token } = await authService.googleAuth(req.body.credential);
 
     res.json({
       success: true,
@@ -310,6 +136,6 @@ export const googleAuth = async (req, res, next) => {
     });
   } catch (error) {
     console.error('Google Auth Error:', error);
-    res.status(400).json({ success: false, message: 'Xác thực Google thất bại' });
+    res.status(400).json({ success: false, message: error.message === 'Thiếu credential' ? error.message : 'Xác thực Google thất bại' });
   }
 };

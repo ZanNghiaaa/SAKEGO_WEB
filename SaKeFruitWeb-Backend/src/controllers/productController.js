@@ -1,30 +1,13 @@
-import Product from '../models/Product.js';
+import productService from '../services/ProductService.js';
 
 // @desc    Get all products
 // @route   GET /api/products
 // @access  Public
 export const getAllProducts = async (req, res, next) => {
   try {
-    const { category, search, limit = 100 } = req.query;
+    const { category, search, limit } = req.query;
     
-    let query = { isActive: true };
-    
-    // Filter by category
-    if (category && category !== 'all') {
-      query.category = category;
-    }
-    
-    // Search by name or description
-    if (search) {
-      query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
-      ];
-    }
-    
-    const products = await Product.find(query)
-      .limit(parseInt(limit))
-      .sort({ createdAt: -1 });
+    const products = await productService.getAllProducts(category, search, limit);
     
     res.json({
       success: true,
@@ -41,7 +24,7 @@ export const getAllProducts = async (req, res, next) => {
 // @access  Public
 export const getProduct = async (req, res, next) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await productService.getProductById(req.params.id);
     
     if (!product) {
       return res.status(404).json({
@@ -64,7 +47,7 @@ export const getProduct = async (req, res, next) => {
 // @access  Private/Admin
 export const createProduct = async (req, res, next) => {
   try {
-    const product = await Product.create(req.body);
+    const product = await productService.createProduct(req.body);
     
     res.status(201).json({
       success: true,
@@ -81,36 +64,7 @@ export const createProduct = async (req, res, next) => {
 // @access  Private/Admin
 export const updateProduct = async (req, res, next) => {
   try {
-    let product = await Product.findById(req.params.id);
-
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: 'Sản phẩm không tồn tại!'
-      });
-    }
-
-    // Sanitize combo fields - nếu không phải combo, xóa các fields combo
-    const updateData = { ...req.body };
-
-    // Nếu request không gửi isCombo hoặc isCombo=false, xóa tất cả combo fields
-    if (!updateData.isCombo || updateData.isCombo === false || updateData.isCombo === 'false') {
-      // Xóa combo fields khỏi update data
-      delete updateData.originalPrice;
-      delete updateData.discount;
-      delete updateData.comboItems;
-      delete updateData.isBestSeller;
-
-      // Set về false để clear trong database
-      updateData.isCombo = false;
-      updateData.isBestSeller = false;
-    }
-
-    product = await Product.findByIdAndUpdate(
-      req.params.id,
-      updateData,
-      { new: true, runValidators: true }
-    );
+    const product = await productService.updateProduct(req.params.id, req.body);
 
     res.json({
       success: true,
@@ -118,6 +72,9 @@ export const updateProduct = async (req, res, next) => {
       product
     });
   } catch (error) {
+    if (error.message === 'Sản phẩm không tồn tại!') {
+      return res.status(404).json({ success: false, message: error.message });
+    }
     next(error);
   }
 };
@@ -127,27 +84,16 @@ export const updateProduct = async (req, res, next) => {
 // @access  Private/Admin
 export const deleteProduct = async (req, res, next) => {
   try {
-    const product = await Product.findById(req.params.id);
-    
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: 'Sản phẩm không tồn tại!'
-      });
-    }
-    
-    // Soft delete - just mark as inactive
-    product.isActive = false;
-    await product.save();
-    
-    // Or hard delete:
-    // await product.deleteOne();
+    await productService.deleteProduct(req.params.id);
     
     res.json({
       success: true,
       message: 'Xóa sản phẩm thành công!'
     });
   } catch (error) {
+    if (error.message === 'Sản phẩm không tồn tại!') {
+      return res.status(404).json({ success: false, message: error.message });
+    }
     next(error);
   }
 };
@@ -157,23 +103,7 @@ export const deleteProduct = async (req, res, next) => {
 // @access  Public
 export const getCategories = async (req, res, next) => {
   try {
-    const products = await Product.find({ isActive: true });
-    
-    const categories = {
-      all: { name: 'Tất cả', count: products.length },
-      mochi: { name: 'Bánh Mochi', count: 0 },
-      tea: { name: 'Trà Sa Kê', count: 0 },
-      dried: { name: 'Khô Sa Kê', count: 0 },
-      'honey-cake': { name: 'Bánh Mật', count: 0 },
-      snack: { name: 'Snack', count: 0 },
-      combo: { name: 'Combo', count: 0 }
-    };
-    
-    products.forEach(product => {
-      if (categories[product.category]) {
-        categories[product.category].count++;
-      }
-    });
+    const categories = await productService.getCategories();
     
     res.json({
       success: true,
