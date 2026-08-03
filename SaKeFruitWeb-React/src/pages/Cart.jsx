@@ -21,6 +21,17 @@ const Cart = () => {
     }
   };
 
+  const getDisplayImage = (item) => {
+    let displayImage = item.image;
+    if (item.name === 'DOUBLE CHILL') displayImage = '/assets/images/Combo_2chill.png';
+    else if (item.name === 'COUPLE CHILL') displayImage = '/assets/images/combo_2chill.jpg';
+    else if (item.name === 'CHILL MỘT MÌNH') displayImage = '/assets/images/combo_1chilll.png';
+    else if (item.name === 'ÍCH KỶ') displayImage = '/assets/images/combo_ichki.jpg';
+    else if (item.name === 'SAKE PARTY') displayImage = '/assets/images/combo_PT.jpg';
+    else if (item.name === 'Combo Sa Kê Đa Dạng') displayImage = '/assets/images/combo_PT.jpg';
+    return displayImage;
+  };
+
   if (cartItems.length === 0) {
     return (
       <main className="cart-page">
@@ -59,7 +70,7 @@ const Cart = () => {
                 {cartItems.map((item, index) => (
                   <div key={item.id} className={`cart-item ${index !== cartItems.length - 1 ? 'cart-item-border' : ''}`}>
                     <div className="cart-item-image">
-                      <img src={item.image} alt={item.name} />
+                      <img src={getDisplayImage(item)} alt={item.name} />
                       {item.isTrial && (
                         <span className="item-trial-badge">
                           <i className="fas fa-gift"></i> Trial

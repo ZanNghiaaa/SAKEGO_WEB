@@ -54,6 +54,15 @@ const ProductCard = ({ product, onAddToCart }) => {
 
   const categoryInfo = getCategoryInfo(product.category);
 
+  // Hardcode combo images as requested by user
+  let displayImage = product.image;
+  if (product.name === 'DOUBLE CHILL') displayImage = '/assets/images/Combo_2chill.png';
+  else if (product.name === 'COUPLE CHILL') displayImage = '/assets/images/combo_2chill.jpg';
+  else if (product.name === 'CHILL MỘT MÌNH') displayImage = '/assets/images/combo_1chilll.png';
+  else if (product.name === 'ÍCH KỶ') displayImage = '/assets/images/combo_ichki.jpg';
+  else if (product.name === 'SAKE PARTY') displayImage = '/assets/images/combo_PT.jpg';
+  else if (product.name === 'Combo Sa Kê Đa Dạng') displayImage = '/assets/images/combo_PT.jpg';
+
   return (
     <div 
       className={`product-card ${product.isTrial ? 'trial-product-card' : ''}`}
@@ -89,7 +98,7 @@ const ProductCard = ({ product, onAddToCart }) => {
         style={{ cursor: 'pointer' }}
       >
         <img 
-          src={product.image} 
+          src={displayImage} 
           alt={product.name}
         />
       </div>
