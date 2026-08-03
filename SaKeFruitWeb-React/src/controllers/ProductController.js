@@ -92,7 +92,7 @@ const getAuthHeader = () => {
 
 export const addProduct = async (productData) => {
   try {
-    const res = await fetch(`${API_URL}/admin/products`, {
+    const res = await fetch(`${API_URL}/products`, {
       method: 'POST',
       headers: getAuthHeader(),
       body: JSON.stringify(productData)
@@ -111,7 +111,7 @@ export const addProduct = async (productData) => {
 
 export const updateProduct = async (id, updates) => {
   try {
-    const res = await fetch(`${API_URL}/admin/products/${id}`, {
+    const res = await fetch(`${API_URL}/products/${id}`, {
       method: 'PUT',
       headers: getAuthHeader(),
       body: JSON.stringify(updates)
@@ -130,7 +130,7 @@ export const updateProduct = async (id, updates) => {
 
 export const deleteProduct = async (id) => {
   try {
-    const res = await fetch(`${API_URL}/admin/products/${id}`, {
+    const res = await fetch(`${API_URL}/products/${id}`, {
       method: 'DELETE',
       headers: getAuthHeader()
     });
