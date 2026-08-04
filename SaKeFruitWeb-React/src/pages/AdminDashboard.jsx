@@ -137,6 +137,44 @@ const AdminDashboard = () => {
     return () => window.removeEventListener('newNotification', loadData);
   }, []);
 
+  /* ── Quick Filters ── */
+  const [activeFilter, setActiveFilter] = useState('all'); // 'today', 'month', 'year', 'all'
+  
+  const handleQuickFilter = (type) => {
+    setActiveFilter(type);
+    const today = new Date();
+    let start = '';
+    let end = today.toISOString().split('T')[0];
+
+    if (type === 'today') {
+      start = end;
+    } else if (type === 'month') {
+      const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+      start = firstDay.toISOString().split('T')[0];
+    } else if (type === 'year') {
+      const firstDay = new Date(today.getFullYear(), 0, 1);
+      start = firstDay.toISOString().split('T')[0];
+    } else {
+      start = '';
+      end = '';
+    }
+    
+    setStartDate(start);
+    setEndDate(end);
+  };
+
+  useEffect(() => {
+    if (activeFilter !== 'custom') {
+      loadData();
+    }
+  }, [startDate, endDate]);
+
+  const handleCustomDateChange = (type, val) => {
+    setActiveFilter('custom');
+    if (type === 'start') setStartDate(val);
+    else setEndDate(val);
+  };
+
   /* Animated counters */
   const cntTotal = useCountUp(stats.total);
   const cntPending = useCountUp(stats.pending);
@@ -191,35 +229,50 @@ const AdminDashboard = () => {
           </p>
         </div>
         <div className="admin-header-actions">
-          <div className="date-filter-group">
-            <div className="date-input-wrap">
-              <label>Từ ngày:</label>
-              <input 
-                type="date" 
-                value={startDate} 
-                onChange={(e) => setStartDate(e.target.value)}
-                className="admin-date-input"
-              />
+          <div className="datetime-filter-container">
+            <div className="quick-filters">
+              <button className={`filter-chip ${activeFilter === 'today' ? 'active' : ''}`} onClick={() => handleQuickFilter('today')}>
+                Hôm nay
+              </button>
+              <button className={`filter-chip ${activeFilter === 'month' ? 'active' : ''}`} onClick={() => handleQuickFilter('month')}>
+                Tháng này
+              </button>
+              <button className={`filter-chip ${activeFilter === 'year' ? 'active' : ''}`} onClick={() => handleQuickFilter('year')}>
+                Năm nay
+              </button>
+              <button className={`filter-chip ${activeFilter === 'all' ? 'active' : ''}`} onClick={() => handleQuickFilter('all')}>
+                Tất cả
+              </button>
             </div>
-            <div className="date-input-wrap">
-              <label>Đến ngày:</label>
-              <input 
-                type="date" 
-                value={endDate} 
-                onChange={(e) => setEndDate(e.target.value)}
-                className="admin-date-input"
-              />
+            
+            <div className="date-filter-group">
+              <div className="date-input-wrap">
+                <label>Từ:</label>
+                <input 
+                  type="date" 
+                  value={startDate} 
+                  onChange={(e) => handleCustomDateChange('start', e.target.value)}
+                  className="admin-date-input"
+                />
+              </div>
+              <div className="date-input-wrap">
+                <label>Đến:</label>
+                <input 
+                  type="date" 
+                  value={endDate} 
+                  onChange={(e) => handleCustomDateChange('end', e.target.value)}
+                  className="admin-date-input"
+                />
+              </div>
+              <button
+                className="btn-primary btn-filter"
+                onClick={loadData}
+                title="Lọc dữ liệu"
+              >
+                <i className={`fas fa-filter ${loading ? 'fa-spin' : ''}`} />
+              </button>
             </div>
           </div>
-          
-          <button
-            className="btn-primary btn-filter"
-            onClick={loadData}
-            title="Lọc dữ liệu"
-          >
-            <i className={`fas fa-filter ${loading ? 'fa-spin' : ''}`} />
-            <span className="btn-text">Lọc</span>
-          </button>
         </div>
       </div>
 
@@ -284,10 +337,14 @@ const AdminDashboard = () => {
             <h3 className="stat-number-animate" style={{ fontSize: stats.totalRevenue > 999999 ? '22px' : '30px' }}>
               {cntRevenue.toLocaleString('vi-VN')}đ
             </h3>
-            <p>Doanh thu</p>
-            <span className="stat-subtext">
-              <i className="fas fa-chart-line" />
-              Từ {stats.completed} đơn hoàn thành
+            <p>Doanh thu {activeFilter === 'today' ? 'hôm nay' : activeFilter === 'month' ? 'tháng này' : activeFilter === 'year' ? 'năm nay' : 'tổng'}</p>
+            <span className="stat-subtext revenue-period">
+              <i className="fas fa-calendar-alt" />
+              {startDate || endDate ? (
+                <>
+                  {startDate ? new Date(startDate).toLocaleDateString('vi-VN') : '...'} - {endDate ? new Date(endDate).toLocaleDateString('vi-VN') : 'Nay'}
+                </>
+              ) : 'Toàn thời gian'}
             </span>
           </div>
         </div>

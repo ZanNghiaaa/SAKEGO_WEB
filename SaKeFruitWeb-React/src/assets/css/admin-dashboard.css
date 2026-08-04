@@ -1494,3 +1494,42 @@
 .admin-bottom-nav { display: none; }
 .mobile-menu-toggle { display: none; }
 
+/* Quick Filters */
+.datetime-filter-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: flex-end;
+}
+.quick-filters {
+  display: flex;
+  gap: 10px;
+}
+.filter-chip {
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  color: var(--admin-text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.filter-chip:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--admin-text);
+}
+.filter-chip.active {
+  background: var(--admin-primary);
+  border-color: var(--admin-primary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+.revenue-period {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
