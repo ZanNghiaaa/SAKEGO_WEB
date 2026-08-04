@@ -68,7 +68,7 @@ const Home = () => {
 
   const sustainPillars = [
     { icon: 'fas fa-seedling',      color: '#4CAF50', title: 'Vùng Trồng Bền Vững',   desc: 'Phát triển 50+ ha vùng trồng sa kê theo tiêu chuẩn VietGAP, không thuốc trừ sâu hóa học.' },
-    { icon: 'fas fa-recycle',       color: '#2196F3', title: 'Kinh Tế Tuần Hoàn',      desc: 'Tận dụng 100% phụ phẩm từ quá trình sản xuất — lá, hạt, vỏ đều được tái chế thành phân hữu cơ.' },
+    { icon: 'fas fa-recycle',       color: '#2196F3', title: 'Mô Hình Sinh Kế Bền Vững',      desc: 'Tận dụng 100% phụ phẩm từ quá trình sản xuất — lá, hạt, vỏ đều được tái chế thành phân hữu cơ.' },
     { icon: 'fas fa-users',         color: '#FF9800', title: 'Cộng Đồng Nông Dân',     desc: 'Đồng hành cùng 200+ hộ nông dân miền Tây, đảm bảo thu nhập ổn định và bền vững.' },
     { icon: 'fas fa-solar-panel',   color: '#9C27B0', title: 'Năng Lượng Xanh',        desc: 'Nhà máy chế biến sử dụng 70% điện năng lượng mặt trời, giảm phát thải carbon.' },
     { icon: 'fas fa-water',         color: '#00BCD4', title: 'Bảo Vệ Nguồn Nước',      desc: 'Hệ thống tưới nhỏ giọt tiết kiệm 60% lượng nước so với phương pháp truyền thống.' },
