@@ -186,24 +186,32 @@ export const cancelOrder = async (orderId, reason = '') => {
 // -------------------------------------------------------
 // Thống kê đơn hàng (Admin)
 // -------------------------------------------------------
-export const getOrdersStatistics = async () => {
+export const getOrdersStatistics = async (startDate, endDate) => {
   try {
-    const res = await fetch(`${API_URL}/admin/statistics`, {
+    let url = `${API_URL}/admin/statistics`;
+    const params = new URLSearchParams();
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+    if (params.toString()) {
+      url += `?${params.toString()}`;
+    }
+
+    const res = await fetch(url, {
       headers: getAuthHeader()
     });
     const data = await res.json();
     if (!data.success) throw new Error('Lỗi thống kê');
     
     // Map dữ liệu từ backend sang format Frontend cần
-    const stats = data.statistics?.orders || {};
+    const stats = data.statistics || {};
     return {
-      total: stats.totalOrders || 0,
-      pending: stats.pendingOrders || 0,
-      confirmed: stats.confirmedOrders || 0,
-      preparing: stats.preparingOrders || 0,
-      delivering: stats.deliveringOrders || 0,
-      completed: stats.completedOrders || 0,
-      cancelled: stats.cancelledOrders || 0,
+      total: stats.total || 0,
+      pending: stats.pending || 0,
+      confirmed: stats.confirmed || 0,
+      preparing: stats.preparing || 0,
+      delivering: stats.delivering || 0,
+      completed: stats.completed || 0,
+      cancelled: stats.cancelled || 0,
       totalRevenue: stats.totalRevenue || 0
     };
   } catch (error) {

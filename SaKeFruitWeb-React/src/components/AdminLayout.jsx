@@ -248,6 +248,41 @@ const AdminLayout = () => {
       <main className="admin-main">
         <Outlet />
       </main>
+
+      {/* Mobile Bottom Navigation */}
+      <nav className="admin-bottom-nav">
+        <Link 
+          to="/admin" 
+          className={`admin-bottom-nav-item ${location.pathname === '/admin' ? 'active' : ''}`}
+        >
+          <i className="fas fa-chart-line"></i>
+          <span>Tổng quan</span>
+        </Link>
+        <Link 
+          to="/admin/orders" 
+          className={`admin-bottom-nav-item ${location.pathname === '/admin/orders' ? 'active' : ''}`}
+        >
+          <i className="fas fa-shopping-bag"></i>
+          <span>Đơn hàng</span>
+          {stats.pending > 0 && (
+            <span className="admin-bottom-nav-badge">{stats.pending}</span>
+          )}
+        </Link>
+        <Link 
+          to="/admin/products" 
+          className={`admin-bottom-nav-item ${location.pathname === '/admin/products' ? 'active' : ''}`}
+        >
+          <i className="fas fa-box"></i>
+          <span>Sản phẩm</span>
+        </Link>
+        <Link 
+          to="/admin/users" 
+          className={`admin-bottom-nav-item ${location.pathname === '/admin/users' ? 'active' : ''}`}
+        >
+          <i className="fas fa-users"></i>
+          <span>Người dùng</span>
+        </Link>
+      </nav>
     </div>
   );
 };

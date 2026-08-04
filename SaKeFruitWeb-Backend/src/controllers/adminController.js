@@ -66,7 +66,8 @@ export const getAllUsers = async (req, res, next) => {
 // @access  Private/Admin
 export const getStatistics = async (req, res, next) => {
   try {
-    const statistics = await adminService.getStatistics();
+    const { startDate, endDate } = req.query;
+    const statistics = await adminService.getStatistics(startDate, endDate);
     
     res.json({
       success: true,

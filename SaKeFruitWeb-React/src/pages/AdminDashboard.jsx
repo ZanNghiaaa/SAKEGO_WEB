@@ -104,6 +104,8 @@ const AdminDashboard = () => {
   const [allOrders, setAllOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const products = getAllProducts();
 
   /* Load data */
@@ -111,7 +113,7 @@ const AdminDashboard = () => {
     setLoading(true);
     try {
       const [statsData, todayData, ordersData, usersData] = await Promise.all([
-        getOrdersStatistics(),
+        getOrdersStatistics(startDate, endDate),
         getTodayOrders(),
         getAllOrders(),
         getUsers()
@@ -179,7 +181,7 @@ const AdminDashboard = () => {
     <div className="admin-dashboard">
       {/* ── Header ── */}
       <div className="admin-header">
-        <div>
+        <div className="admin-header-title">
           <h1>
             <i className="fas fa-chart-line" />
             Tổng Quan
@@ -189,19 +191,34 @@ const AdminDashboard = () => {
           </p>
         </div>
         <div className="admin-header-actions">
-          <div className="today-date">
-            <i className="fas fa-calendar-alt" />
-            <span>{new Date().toLocaleDateString('vi-VN', {
-              weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-            })}</span>
+          <div className="date-filter-group">
+            <div className="date-input-wrap">
+              <label>Từ ngày:</label>
+              <input 
+                type="date" 
+                value={startDate} 
+                onChange={(e) => setStartDate(e.target.value)}
+                className="admin-date-input"
+              />
+            </div>
+            <div className="date-input-wrap">
+              <label>Đến ngày:</label>
+              <input 
+                type="date" 
+                value={endDate} 
+                onChange={(e) => setEndDate(e.target.value)}
+                className="admin-date-input"
+              />
+            </div>
           </div>
+          
           <button
-            className="btn-primary"
+            className="btn-primary btn-filter"
             onClick={loadData}
-            style={{ padding: '10px 14px' }}
-            title="Làm mới dữ liệu"
+            title="Lọc dữ liệu"
           >
-            <i className={`fas fa-sync-alt ${loading ? 'fa-spin' : ''}`} />
+            <i className={`fas fa-filter ${loading ? 'fa-spin' : ''}`} />
+            <span className="btn-text">Lọc</span>
           </button>
         </div>
       </div>

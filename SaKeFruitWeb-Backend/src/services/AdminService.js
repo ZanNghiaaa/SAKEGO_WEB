@@ -4,6 +4,7 @@ import productRepository from '../repositories/ProductRepository.js';
 import notificationRepository from '../repositories/NotificationRepository.js';
 import { sendEmail, thankYouEmail } from '../utils/email.js';
 import userModel from '../models/User.js';
+import Order from '../models/Order.js';
 
 class AdminService {
   async getAllOrders(status, limit = 100, page = 1) {
@@ -148,9 +149,35 @@ class AdminService {
     };
   }
 
-  async getStatistics() {
-    const orderStats = await orderRepository.getStatistics();
+  async getStatistics(startDate, endDate) {
+    // Determine the date filter
+    let dateFilter = {};
+    if (startDate || endDate) {
+      dateFilter.createdAt = {};
+      if (startDate) dateFilter.createdAt.$gte = new Date(startDate);
+      if (endDate) {
+        let end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        dateFilter.createdAt.$lte = end;
+      }
+    }
+
+    // Get order stats with date filter
+    const totalOrders = await orderRepository.count(dateFilter);
+    const pendingOrders = await orderRepository.count({ ...dateFilter, status: 'pending' });
+    const confirmedOrders = await orderRepository.count({ ...dateFilter, status: 'confirmed' });
+    const preparingOrders = await orderRepository.count({ ...dateFilter, status: 'preparing' });
+    const deliveringOrders = await orderRepository.count({ ...dateFilter, status: 'delivering' });
+    const completedOrders = await orderRepository.count({ ...dateFilter, status: 'completed' });
+    const cancelledOrders = await orderRepository.count({ ...dateFilter, status: 'cancelled' });
     
+    // Calculate total revenue with date filter
+    const revenueResult = await Order.aggregate([
+      { $match: { ...dateFilter, status: 'completed' } },
+      { $group: { _id: null, total: { $sum: '$totalAmount' } } }
+    ]);
+    const totalRevenue = revenueResult.length > 0 ? revenueResult[0].total : 0;
+
     const totalUsers = await userRepository.count();
     const totalCustomers = await userRepository.count({ role: 'customer' });
     const newUsersThisMonth = await userRepository.count({
@@ -181,10 +208,15 @@ class AdminService {
     // Wait, OrderRepository doesn't support select.
     
     return {
-      orders: {
-        ...orderStats,
-        todayOrders
-      },
+      total: totalOrders,
+      pending: pendingOrders,
+      confirmed: confirmedOrders,
+      preparing: preparingOrders,
+      delivering: deliveringOrders,
+      completed: completedOrders,
+      cancelled: cancelledOrders,
+      totalRevenue: totalRevenue,
+      todayOrders,
       users: {
         total: totalUsers,
         customers: totalCustomers,
