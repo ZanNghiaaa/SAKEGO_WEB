@@ -2,6 +2,8 @@ import orderRepository from '../repositories/OrderRepository.js';
 import userRepository from '../repositories/UserRepository.js';
 import productRepository from '../repositories/ProductRepository.js';
 import notificationRepository from '../repositories/NotificationRepository.js';
+import { sendEmail, thankYouEmail } from '../utils/email.js';
+import userModel from '../models/User.js';
 
 class AdminService {
   async getAllOrders(status, limit = 100, page = 1) {
@@ -89,7 +91,33 @@ class AdminService {
         note
       }
     });
-    
+
+    // Send thank you email when order is delivered successfully
+    if (status === 'completed') {
+      try {
+        // Get customer email - order.userId might be populated or just an ID
+        let customerEmail = null;
+        if (order.userId?.email) {
+          customerEmail = order.userId.email;
+        } else {
+          const customer = await userModel.findById(order.userId).select('email fullname');
+          if (customer) {
+            customerEmail = customer.email;
+            order.userId = customer; // attach for template
+          }
+        }
+        if (customerEmail) {
+          sendEmail({
+            email: customerEmail,
+            subject: '🎉 Giao hàng thành công - Cảm ơn bạn đã ủng hộ SAKEGO!',
+            html: thankYouEmail(order)
+          });
+        }
+      } catch (emailErr) {
+        console.error('Failed to send thank you email:', emailErr);
+      }
+    }
+
     return order;
   }
 
