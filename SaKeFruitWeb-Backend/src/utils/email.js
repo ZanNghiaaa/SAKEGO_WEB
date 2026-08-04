@@ -16,7 +16,7 @@ const getResendClient = () => {
 // Send email
 export const sendEmail = async (options) => {
   const resend = getResendClient();
-  
+
   if (!resend) {
     console.error('Error: RESEND_API_KEY is not configured');
     return;
@@ -24,7 +24,7 @@ export const sendEmail = async (options) => {
 
   try {
     const data = await resend.emails.send({
-      from: 'SaKeGo <noreply@sakego.com.vn>',
+      from: 'Sakego <noreply@sakego.com.vn>',
       to: options.email,
       subject: options.subject,
       html: options.html
@@ -84,7 +84,7 @@ export const orderConfirmationEmail = (order) => {
     <body>
       <div class="container">
         <div class="header">
-          <h1> SaKeGo </h1>
+          <h1> SAKEGO </h1>
           <h2>Xác nhận đơn hàng thành công</h2>
         </div>
         
@@ -144,12 +144,12 @@ export const orderConfirmationEmail = (order) => {
         </div>
         
         <div class="footer">
-          <p><strong>Cảm ơn bạn đã tin tưởng và ủng hộ SaKeGo!</strong></p>
+          <p><strong>Cảm ơn bạn đã tin tưởng và ủng hộ SAKEGO!</strong></p>
           <div class="contact-info">
             <p>Nếu có bất kỳ thắc mắc nào, vui lòng liên hệ:</p>
             <p>📞 Hotline: <a href="tel:0392020136">039 2020 136</a></p>
-            <p>📧 Email: <a href="mailto:support@SaKeGo.com">support@SaKeGo.com</a></p>
-            <p>🌐 Website: <a href="http://localhost:3000">www.SaKeGo.com</a></p>
+            <p>📧 Email: <a href="mailto:Sakego25@gmail.com">Sakego25@gmail.com</a></p>
+            <p>🌐 Website: <a href="http://localhost:3000">www.sakego.com.vn</a></p>
           </div>
           <p style="margin-top: 20px; color: #999; font-size: 12px;">
             © 2026 SaKeGo - Trái Sa Kê Tươi Ngon Từ Vườn
@@ -230,7 +230,7 @@ export const resetPasswordEmail = (fullname, resetUrl) => {
           <p><strong>Cần hỗ trợ?</strong></p>
           <div class="contact-info">
             <p>📞 Hotline: <a href="tel:0123456789">0123 456 789</a></p>
-            <p>📧 Email: <a href="mailto:support@SaKeGo.com">support@SaKeGo.com</a></p>
+            <p>📧 Email: <a href="mailto:Sakego25@gmail.com">Sakego25@gmail.com</a></p>
             <p>🌐 Website: <a href="http://localhost:3000">www.SaKeGo.com</a></p>
           </div>
           <p style="margin-top: 20px; color: #999; font-size: 12px;">
