@@ -48,7 +48,7 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem('cart', JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const addToCart = (product) => {
+  const addToCart = (product, qty = 1) => {
     // Normalize: luôn dùng _id từ MongoDB làm key chính
     const normalizedProduct = {
       ...product,
@@ -71,11 +71,11 @@ export const CartProvider = ({ children }) => {
       if (existingItem) {
         return prevItems.map(item =>
           (item._id || item.id) === normalizedProduct._id
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: item.quantity + qty }
             : item
         );
       } else {
-        return [...prevItems, { ...normalizedProduct, quantity: 1 }];
+        return [...prevItems, { ...normalizedProduct, quantity: qty }];
       }
     });
   };

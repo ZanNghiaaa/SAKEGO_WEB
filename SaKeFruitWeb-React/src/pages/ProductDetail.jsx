@@ -54,24 +54,16 @@ const ProductDetail = () => {
   };
 
   const handleAddToCart = () => {
-    // Add product with selected quantity
-    const productWithQuantity = { ...product, quantity };
-    
-    // Add to cart multiple times based on quantity
-    for (let i = 0; i < quantity; i++) {
-      addToCart(product);
-    }
+    addToCart(product, quantity);
     
     setNotification(`Đã thêm ${quantity} sản phẩm vào giỏ hàng!`);
     setTimeout(() => setNotification(''), 3000);
   };
 
   const handleBuyNow = () => {
-    // Add product with selected quantity
-    for (let i = 0; i < quantity; i++) {
-      addToCart(product);
-    }
-    navigate('/checkout');
+    addToCart(product, quantity);
+    // Allow state to update before navigating to prevent empty cart issue
+    setTimeout(() => navigate('/checkout'), 100);
   };
 
   const getCategoryInfo = (category) => {
