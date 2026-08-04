@@ -103,21 +103,29 @@ const AdminDashboard = () => {
   const [todayOrders, setTodayOrders] = useState([]);
   const [allOrders, setAllOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const users = getUsers();
+  const [users, setUsers] = useState([]);
   const products = getAllProducts();
 
   /* Load data */
   const loadData = async () => {
     setLoading(true);
-    const [statsData, todayData, ordersData] = await Promise.all([
-      getOrdersStatistics(),
-      getTodayOrders(),
-      getAllOrders()
-    ]);
-    setStats(statsData);
-    setTodayOrders(todayData);
-    setAllOrders(ordersData);
-    setLoading(false);
+    try {
+      const [statsData, todayData, ordersData, usersData] = await Promise.all([
+        getOrdersStatistics(),
+        getTodayOrders(),
+        getAllOrders(),
+        getUsers()
+      ]);
+      setStats(statsData);
+      setTodayOrders(todayData);
+      setAllOrders(ordersData);
+      setUsers(usersData || []);
+    } catch (error) {
+      console.error('Lỗi khi tải dữ liệu dashboard:', error);
+      setUsers([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => { loadData(); }, []);
