@@ -1,36 +1,35 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import dotenv from 'dotenv';
 
 // Ensure env variables are loaded
 dotenv.config();
 
-// Create transporter function (lazy initialization)
-const getTransporter = () => {
-  return nodemailer.createTransport({
-    host: process.env.EMAIL_HOST?.trim() || 'smtp.gmail.com',
-    port: process.env.EMAIL_PORT || 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL_USER?.trim(),
-      pass: process.env.EMAIL_PASS?.trim()
-    }
-  });
+// Create resend client (lazy initialization)
+let resendClient = null;
+const getResendClient = () => {
+  if (!resendClient && process.env.RESEND_API_KEY) {
+    resendClient = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resendClient;
 };
 
 // Send email
 export const sendEmail = async (options) => {
-  const transporter = getTransporter();
+  const resend = getResendClient();
   
-  const mailOptions = {
-    from: `SaKeGo <${process.env.EMAIL_USER}>`,
-    to: options.email,
-    subject: options.subject,
-    html: options.html
-  };
-  
+  if (!resend) {
+    console.error('Error: RESEND_API_KEY is not configured');
+    return;
+  }
+
   try {
-    await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully to:', options.email);
+    const data = await resend.emails.send({
+      from: 'SaKeGo <noreply@sakego.com.vn>',
+      to: options.email,
+      subject: options.subject,
+      html: options.html
+    });
+    console.log('Email sent successfully via Resend:', data);
   } catch (error) {
     console.error('Error sending email:', error);
   }
