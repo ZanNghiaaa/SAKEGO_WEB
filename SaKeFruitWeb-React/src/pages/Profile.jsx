@@ -96,22 +96,19 @@ const Profile = () => {
 
           {/* Banner đặt hàng thành công */}
           {orderSuccess && (
-            <div style={{
-              background: 'linear-gradient(135deg, #22c55e, #16a34a)',
-              color: '#fff', borderRadius: '16px', padding: '20px',
-              marginBottom: '28px', display: 'flex', alignItems: 'flex-start', gap: '12px',
-              boxShadow: '0 4px 20px rgba(34,197,94,0.35)', flexWrap: 'wrap'
-            }}>
-              <div style={{ fontSize: '40px', flexShrink: 0 }}>🎉</div>
-              <div style={{ flex: 1, minWidth: 0, wordBreak: 'break-word' }}>
-                <div style={{ fontSize: '18px', fontWeight: 700, marginBottom: '4px' }}>
-                  Đặt hàng thành công!
-                </div>
-                <div style={{ fontSize: '14px', opacity: 0.9, lineHeight: '1.5' }}>
-                  {orderNumber && <span style={{ display: 'inline-block', marginRight: 8 }}>Mã đơn: <strong>{orderNumber}</strong></span>}
-                  {orderTotal && <span style={{ display: 'inline-block', marginRight: 8 }}>Tổng tiền: <strong>{orderTotal.toLocaleString('vi-VN')}đ</strong></span>}
-                  <span style={{ display: 'inline-block' }}>Chúng tôi sẽ liên hệ và giao hàng tận nơi tại Cần Thơ. Cảm ơn bạn! 🌿</span>
-                </div>
+            <div className="success-order-banner">
+              <div className="success-icon">
+                <i className="fas fa-check-circle"></i>
+              </div>
+              <div className="success-content">
+                <h3>Đặt hàng thành công! 🎉</h3>
+                <p>Chúng tôi sẽ sớm liên hệ và giao hàng tận nơi tại Cần Thơ. Cảm ơn bạn đã tin tưởng Sa Kê Go! 🌿</p>
+                {(orderNumber || orderTotal) && (
+                  <div className="success-order-details">
+                    {orderNumber && <span><i className="fas fa-receipt"></i> Mã đơn: <strong>#{String(orderNumber).slice(-6).toUpperCase()}</strong></span>}
+                    {orderTotal && <span><i className="fas fa-money-bill-wave"></i> Tổng tiền: <strong>{orderTotal.toLocaleString('vi-VN')}đ</strong></span>}
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -361,7 +358,7 @@ const Profile = () => {
                           <div className="order-header">
                             <div className="order-id">
                               <i className="fas fa-receipt"></i>
-                              <strong>{order.orderNumber || `#${order.id.slice(-8).toUpperCase()}`}</strong>
+                              <strong>#{String(order.orderNumber || order.id).slice(-6).toUpperCase()}</strong>
                             </div>
                             <span className={`order-status ${getStatusClass(order.status)}`}>
                               {ORDER_STATUS_TEXT[order.status]}
