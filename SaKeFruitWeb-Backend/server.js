@@ -27,7 +27,9 @@ connectDB();
 const defaultOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
-  'http://localhost:3001'
+  'http://localhost:3001',
+  'https://sakego.com.vn',
+  'https://www.sakego.com.vn'
 ];
 
 // Hỗ trợ thêm origin từ env (phân cách bởi dấu phẩy) - dùng khi deploy lên Vercel
