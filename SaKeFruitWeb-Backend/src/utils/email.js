@@ -61,41 +61,41 @@ export const orderConfirmationEmail = (order) => {
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
         * { box-sizing: border-box; }
-        body { font-family: 'Inter', 'Segoe UI', sans-serif; margin: 0; padding: 0; background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%); }
-        .wrapper { padding: 32px 16px; }
-        .container { max-width: 580px; margin: 0 auto; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 40px rgba(46,125,50,0.12); }
-        .header { background: linear-gradient(135deg, #00C853 0%, #1B5E20 100%); padding: 40px 32px 32px; text-align: center; position: relative; }
-        .header::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 30px; background: #fff; border-radius: 30px 30px 0 0; }
-        .logo { font-size: 34px; font-weight: 800; color: #fff; letter-spacing: 3px; margin: 0; text-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-        .header-sub { color: rgba(255,255,255,0.92); font-size: 15px; margin: 8px 0 0; font-weight: 500; }
-        .badge-success { display: inline-block; background: rgba(255,255,255,0.22); border: 2px solid rgba(255,255,255,0.5); color: #fff; border-radius: 30px; padding: 6px 18px; font-size: 13px; font-weight: 700; margin-top: 12px; letter-spacing: 1px; }
-        .content { padding: 32px 32px 24px; }
-        .greeting { font-size: 18px; color: #1B5E20; font-weight: 700; margin: 0 0 8px; }
-        .intro { color: #555; font-size: 14px; line-height: 1.7; margin: 0 0 24px; }
-        .info-card { background: linear-gradient(135deg, #f0fff4 0%, #e8f5e9 100%); border: 1px solid #c8e6c9; border-radius: 14px; padding: 22px 24px; margin-bottom: 24px; }
-        .info-row { display: flex; align-items: center; padding: 7px 0; border-bottom: 1px dashed #c8e6c9; }
+        body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background-color: #f7fbfa; }
+        .wrapper { padding: 40px 16px; }
+        .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 40px rgba(76, 175, 80, 0.08); border: 1px solid #edf5ee; }
+        .header { background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%); padding: 48px 32px 36px; text-align: center; position: relative; }
+        .header::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 32px; background: #ffffff; border-radius: 32px 32px 0 0; }
+        .logo { font-family: 'Quicksand', sans-serif; font-size: 38px; font-weight: 700; color: #ffffff; letter-spacing: 2px; margin: 0; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header-sub { color: rgba(255, 255, 255, 0.95); font-size: 16px; margin: 10px 0 0; font-weight: 500; font-family: 'Quicksand', sans-serif; }
+        .badge-success { display: inline-block; background: #ffffff; color: #43a047; border-radius: 30px; padding: 8px 24px; font-size: 14px; font-weight: 700; margin-top: 16px; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .content { padding: 32px 40px 40px; }
+        .greeting { font-size: 22px; color: #2e7d32; font-weight: 700; margin: 0 0 12px; font-family: 'Quicksand', sans-serif; }
+        .intro { color: #555555; font-size: 15px; line-height: 1.6; margin: 0 0 32px; }
+        .info-card { background: #fdfdfd; border: 1px solid #eef5ef; border-radius: 16px; padding: 24px; margin-bottom: 32px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .info-row { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px dashed #e0ebe2; }
         .info-row:last-child { border-bottom: none; }
-        .info-label { color: #555; font-size: 13px; min-width: 170px; }
-        .info-value { color: #1B5E20; font-weight: 700; font-size: 13px; }
-        .status-pill { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(90deg, #FF6F00, #FFA000); color: #fff; border-radius: 30px; padding: 8px 20px; font-weight: 700; font-size: 14px; margin: 4px 0 24px; box-shadow: 0 4px 12px rgba(255,111,0,0.3); }
-        .section-title { font-size: 15px; font-weight: 700; color: #1B5E20; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
-        .order-table { width: 100%; border-collapse: collapse; border-radius: 12px; overflow: hidden; border: 1px solid #e8f5e9; }
-        .order-table thead tr { background: linear-gradient(90deg, #43A047, #2E7D32); }
-        .order-table thead th { color: #fff; padding: 12px 16px; text-align: left; font-size: 13px; font-weight: 600; }
-        .order-table tbody tr:hover { background: #f9fff9; }
-        .total-row { background: linear-gradient(90deg, #E8F5E9, #F1F8E9) !important; }
-        .total-row td { font-weight: 700; font-size: 16px; padding: 16px !important; color: #1B5E20; border-top: 2px solid #A5D6A7; }
-        .delivery-card { background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%); border: 1px solid #90CAF9; border-radius: 14px; padding: 20px 24px; margin-top: 20px; }
-        .delivery-card h3 { color: #1565C0; margin: 0 0 12px; font-size: 14px; font-weight: 700; }
-        .delivery-item { color: #1976D2; font-size: 13px; margin: 6px 0; display: flex; align-items: center; gap: 8px; }
-        .note-box { background: linear-gradient(135deg, #FFF8E1, #FFF3CD); border: 1px solid #FFD54F; border-radius: 12px; padding: 16px 20px; margin-top: 16px; color: #E65100; font-size: 13px; }
-        .footer { background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%); padding: 28px 32px; text-align: center; }
-        .footer-title { color: #fff; font-weight: 700; font-size: 15px; margin: 0 0 16px; }
-        .contact-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
-        .contact-btn { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-        .copyright { color: rgba(255,255,255,0.5); font-size: 11px; margin: 0; }
+        .info-label { color: #777777; font-size: 14px; min-width: 160px; font-weight: 500; }
+        .info-value { color: #333333; font-weight: 600; font-size: 14px; }
+        .status-pill { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #ffa726, #fb8c00); color: #ffffff; border-radius: 30px; padding: 8px 20px; font-weight: 600; font-size: 14px; margin: 0 0 32px; box-shadow: 0 4px 15px rgba(251, 140, 0, 0.2); }
+        .section-title { font-size: 18px; font-weight: 700; color: #2e7d32; margin: 0 0 16px; display: flex; align-items: center; gap: 8px; font-family: 'Quicksand', sans-serif; }
+        .order-table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 12px; overflow: hidden; border: 1px solid #eef5ef; }
+        .order-table thead tr { background: #f3faf4; }
+        .order-table thead th { color: #43a047; padding: 14px 16px; text-align: left; font-size: 14px; font-weight: 600; border-bottom: 1px solid #eef5ef; }
+        .order-table tbody tr:hover { background: #fafdfb; }
+        .total-row { background: #fdfdfd !important; }
+        .total-row td { font-weight: 700; font-size: 16px; padding: 20px 16px !important; color: #2e7d32; border-top: 2px solid #eef5ef; }
+        .delivery-card { background: #f5faff; border: 1px solid #e3f2fd; border-radius: 16px; padding: 24px; margin-top: 32px; }
+        .delivery-card h3 { color: #1976d2; margin: 0 0 16px; font-size: 16px; font-weight: 600; font-family: 'Quicksand', sans-serif; }
+        .delivery-item { color: #424242; font-size: 14px; margin: 8px 0; display: flex; align-items: center; gap: 8px; }
+        .note-box { background: #fffdf5; border: 1px solid #ffecb3; border-radius: 12px; padding: 20px; margin-top: 24px; color: #f57c00; font-size: 14px; line-height: 1.6; }
+        .footer { background: #fafdfb; border-top: 1px solid #eef5ef; padding: 32px 40px; text-align: center; }
+        .footer-title { color: #2e7d32; font-weight: 700; font-size: 16px; margin: 0 0 20px; font-family: 'Quicksand', sans-serif; }
+        .contact-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+        .contact-btn { display: inline-flex; align-items: center; gap: 6px; background: #ffffff; border: 1px solid #e0ebe2; color: #43a047; text-decoration: none; padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: all 0.3s; }
+        .copyright { color: #999999; font-size: 12px; margin: 0; }
       </style>
     </head>
     <body>
@@ -195,20 +195,21 @@ export const resetPasswordEmail = (fullname, resetUrl) => {
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f4f4f4; }
-        .container { max-width: 600px; margin: 20px auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .header { background: linear-gradient(135deg, #7CB342 0%, #558B2F 100%); color: white; padding: 30px 20px; text-align: center; }
-        .header h1 { margin: 0; font-size: 32px; }
-        .header h2 { margin: 10px 0 0 0; font-size: 20px; font-weight: normal; }
-        .content { padding: 30px 20px; }
-        .greeting { font-size: 18px; margin-bottom: 20px; }
-        .warning-box { background: #fff3e0; border-left: 4px solid #ff9800; padding: 15px; margin: 20px 0; border-radius: 4px; }
-        .reset-button { display: inline-block; padding: 15px 30px; background: linear-gradient(135deg, #7CB342 0%, #558B2F 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; margin: 20px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .reset-button:hover { box-shadow: 0 6px 8px rgba(0,0,0,0.15); }
-        .security-note { background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 14px; color: #666; }
-        .footer { background: #f9f9f9; text-align: center; padding: 20px; color: #666; font-size: 14px; }
-        .contact-info { margin-top: 15px; }
-        .contact-info a { color: #7CB342; text-decoration: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f7fbfa; }
+        .container { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 40px rgba(76, 175, 80, 0.08); border: 1px solid #edf5ee; }
+        .header { background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%); color: white; padding: 40px 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 34px; font-family: 'Quicksand', sans-serif; letter-spacing: 1px; }
+        .header h2 { margin: 10px 0 0 0; font-size: 18px; font-weight: 500; opacity: 0.9; }
+        .content { padding: 40px; }
+        .greeting { font-size: 20px; color: #2e7d32; font-family: 'Quicksand', sans-serif; font-weight: 700; margin-bottom: 24px; }
+        .warning-box { background: #fffdf5; border-left: 4px solid #ffa726; padding: 20px; margin: 24px 0; border-radius: 12px; border-top: 1px solid #ffecb3; border-right: 1px solid #ffecb3; border-bottom: 1px solid #ffecb3; color: #e65100; }
+        .reset-button { display: inline-block; padding: 16px 36px; background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%); color: white; text-decoration: none; border-radius: 30px; font-weight: 600; font-size: 16px; margin: 24px 0; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2); }
+        .reset-button:hover { box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3); transform: translateY(-1px); }
+        .security-note { background: #fafdfb; padding: 24px; border-radius: 16px; margin: 32px 0 0; font-size: 14px; color: #555555; border: 1px solid #eef5ef; }
+        .footer { background: #fafdfb; border-top: 1px solid #eef5ef; text-align: center; padding: 32px; color: #777777; font-size: 14px; }
+        .contact-info { margin-top: 16px; line-height: 1.8; }
+        .contact-info a { color: #43a047; text-decoration: none; font-weight: 500; }
       </style>
     </head>
     <body>
@@ -277,22 +278,23 @@ export const tempPasswordEmail = (fullname, tempPassword) => {
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f4f4f4; }
-        .container { max-width: 600px; margin: 20px auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .header { background: linear-gradient(135deg, #7CB342 0%, #558B2F 100%); color: white; padding: 30px 20px; text-align: center; }
-        .header h1 { margin: 0; font-size: 32px; }
-        .header h2 { margin: 10px 0 0 0; font-size: 20px; font-weight: normal; }
-        .content { padding: 30px 20px; }
-        .greeting { font-size: 18px; margin-bottom: 20px; }
-        .password-box { background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 2px dashed #2196F3; padding: 25px; margin: 30px 0; border-radius: 10px; text-align: center; }
-        .password-box .label { font-size: 14px; color: #666; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
-        .password-box .password { font-size: 32px; font-weight: bold; color: #1976D2; letter-spacing: 5px; margin: 10px 0; font-family: 'Courier New', monospace; background: white; padding: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .warning-box { background: #fff3e0; border-left: 4px solid #ff9800; padding: 15px; margin: 20px 0; border-radius: 4px; }
-        .info-box { background: #e8f5e9; border-left: 4px solid #4CAF50; padding: 15px; margin: 20px 0; border-radius: 4px; }
-        .security-note { background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 14px; color: #666; }
-        .footer { background: #f9f9f9; text-align: center; padding: 20px; color: #666; font-size: 14px; }
-        .contact-info { margin-top: 15px; }
-        .contact-info a { color: #7CB342; text-decoration: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f7fbfa; }
+        .container { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 40px rgba(76, 175, 80, 0.08); border: 1px solid #edf5ee; }
+        .header { background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%); color: white; padding: 40px 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 34px; font-family: 'Quicksand', sans-serif; letter-spacing: 1px; }
+        .header h2 { margin: 10px 0 0 0; font-size: 18px; font-weight: 500; opacity: 0.9; }
+        .content { padding: 40px; }
+        .greeting { font-size: 20px; color: #2e7d32; font-family: 'Quicksand', sans-serif; font-weight: 700; margin-bottom: 24px; }
+        .password-box { background: #f5faff; border: 2px dashed #90caf9; padding: 32px 24px; margin: 32px 0; border-radius: 16px; text-align: center; }
+        .password-box .label { font-size: 13px; color: #555555; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
+        .password-box .password { font-size: 36px; font-weight: 800; color: #1976d2; letter-spacing: 6px; margin: 16px 0; font-family: 'Courier New', monospace; background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(25, 118, 210, 0.08); }
+        .warning-box { background: #fffdf5; border-left: 4px solid #ffa726; padding: 20px; margin: 24px 0; border-radius: 12px; border: 1px solid #ffecb3; border-left: 4px solid #ffa726; color: #e65100; }
+        .info-box { background: #f3faf4; border-left: 4px solid #66bb6a; padding: 20px; margin: 24px 0; border-radius: 12px; border: 1px solid #eef5ef; border-left: 4px solid #66bb6a; color: #2e7d32; }
+        .security-note { background: #fafdfb; padding: 24px; border-radius: 16px; margin: 32px 0 0; font-size: 14px; color: #555555; border: 1px solid #eef5ef; }
+        .footer { background: #fafdfb; border-top: 1px solid #eef5ef; text-align: center; padding: 32px; color: #777777; font-size: 14px; }
+        .contact-info { margin-top: 16px; line-height: 1.8; }
+        .contact-info a { color: #43a047; text-decoration: none; font-weight: 500; }
       </style>
     </head>
     <body>
@@ -375,26 +377,29 @@ export const thankYouEmail = (order) => {
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f4f4f4; }
-        .container { max-width: 600px; margin: 20px auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .header { background: linear-gradient(135deg, #7CB342 0%, #558B2F 100%); color: white; padding: 40px 20px; text-align: center; }
-        .header h1 { margin: 0 0 8px; font-size: 28px; font-weight: 800; letter-spacing: 1px; }
-        .header p { margin: 0; opacity: 0.9; font-size: 15px; }
-        .emoji-big { font-size: 60px; display: block; margin-bottom: 16px; }
-        .body { padding: 36px 32px; }
-        .body h2 { color: #2e7d32; margin: 0 0 12px; font-size: 20px; }
-        .body p { color: #555; margin: 0 0 14px; }
-        .highlight-box { background: #f1f8e9; border-left: 4px solid #7CB342; border-radius: 8px; padding: 18px 20px; margin: 24px 0; }
-        .highlight-box p { margin: 0; color: #33691e; font-weight: 600; font-size: 15px; }
-        .order-number { display: inline-block; background: #e8f5e9; border: 1px solid #a5d6a7; color: #2e7d32; padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 14px; }
-        .btn-shop { display: inline-block; margin-top: 8px; background: linear-gradient(135deg, #7CB342, #558B2F); color: white; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: 700; font-size: 15px; }
-        .divider { border: none; border-top: 1px solid #eee; margin: 28px 0; }
-        .feedback { background: #fff8e1; border-radius: 10px; padding: 20px; text-align: center; margin: 20px 0; }
-        .feedback p { color: #f57f17; font-weight: 600; margin: 0 0 8px; }
-        .stars { font-size: 24px; letter-spacing: 4px; }
-        .footer { background: #f9f9f9; padding: 20px 32px; text-align: center; border-top: 1px solid #eee; }
-        .footer p { color: #999; font-size: 12px; margin: 4px 0; }
-        .contact-links a { color: #7CB342; text-decoration: none; margin: 0 8px; font-size: 13px; }
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f7fbfa; }
+        .container { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 40px rgba(76, 175, 80, 0.08); border: 1px solid #edf5ee; }
+        .header { background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%); color: white; padding: 48px 20px 40px; text-align: center; }
+        .header h1 { margin: 0 0 12px; font-size: 36px; font-family: 'Quicksand', sans-serif; font-weight: 800; letter-spacing: 2px; }
+        .header p { margin: 0; opacity: 0.95; font-size: 16px; font-weight: 500; }
+        .emoji-big { font-size: 64px; display: block; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1)); }
+        .body { padding: 40px; }
+        .body h2 { color: #2e7d32; margin: 0 0 16px; font-size: 22px; font-family: 'Quicksand', sans-serif; font-weight: 700; }
+        .body p { color: #555555; margin: 0 0 16px; font-size: 15px; }
+        .highlight-box { background: #f3faf4; border-left: 4px solid #66bb6a; border-radius: 12px; padding: 24px; margin: 32px 0; border: 1px solid #eef5ef; border-left: 4px solid #66bb6a; }
+        .highlight-box p { margin: 0; color: #2e7d32; font-weight: 600; font-size: 15px; }
+        .order-number { display: inline-block; background: #ffffff; border: 1px solid #c8e6c9; color: #43a047; padding: 6px 16px; border-radius: 30px; font-weight: 700; font-size: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .btn-shop { display: inline-block; margin-top: 12px; background: linear-gradient(135deg, #66bb6a, #43a047); color: white; text-decoration: none; padding: 16px 40px; border-radius: 30px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2); transition: all 0.3s; }
+        .btn-shop:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3); }
+        .divider { border: none; border-top: 1px dashed #e0ebe2; margin: 32px 0; }
+        .feedback { background: #fffdf5; border-radius: 16px; padding: 24px; text-align: center; margin: 32px 0; border: 1px solid #ffecb3; }
+        .feedback p { color: #f57c00; font-weight: 600; margin: 0 0 12px; font-size: 15px; }
+        .stars { font-size: 28px; letter-spacing: 6px; }
+        .footer { background: #fafdfb; padding: 32px; text-align: center; border-top: 1px solid #eef5ef; }
+        .footer p { color: #999999; font-size: 13px; margin: 6px 0; }
+        .contact-links { margin: 16px 0; display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+        .contact-links a { color: #43a047; text-decoration: none; font-size: 13px; font-weight: 600; background: #ffffff; padding: 8px 16px; border-radius: 20px; border: 1px solid #e0ebe2; }
       </style>
     </head>
     <body>
