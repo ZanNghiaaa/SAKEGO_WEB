@@ -320,8 +320,32 @@ const AIChatbot = () => {
       } else if (has('sa kê là gì', 'trái sa kê', 'cây sa kê', 'sa ke') && !has('trà', 'mochi', 'sữa')) {
         botReply = '🌳 Sa kê (Artocarpus altilis) là loại cây nhiệt đới quý, phổ biến ở miền Tây Nam Bộ. Trái sa kê giàu tinh bột kháng, vitamin C, B, kali, magiê và chất xơ — vượt trội nhiều loại lương thực thông thường. 🌿 SAKEGO đang khai thác trọn vẹn tiềm năng dinh dưỡng của sa kê qua 3 dòng sản phẩm: Trà 🍵, Mochi 🍡 và Sữa Gạo 🥛 — bạn muốn tìm hiểu dòng nào ạ?';
 
-      } else if (has('công dụng', 'sức khỏe', 'lợi ích', 'tốt không', 'bổ không', 'dinh dưỡng') && !has('trà', 'mochi', 'sữa')) {
+      } else if (has('công dụng', 'sức khỏe', 'lợi ích', 'tốt không', 'bổ không') && !has('trà', 'mochi', 'sữa')) {
         botReply = '💚 Sa kê mang lại rất nhiều lợi ích sức khỏe: Ổn định đường huyết, hỗ trợ huyết áp, tăng cường miễn dịch, cải thiện tiêu hóa, thanh nhiệt và giải độc. 🌿 Các sản phẩm SAKEGO giúp bạn hấp thụ những tinh túy này một cách ngon miệng và tiện lợi nhất! Bạn quan tâm công dụng nào cụ thể để mình tư vấn thêm nhé?';
+
+      // ══════════════════════════════════════════════════════════
+      // 28.5. KIẾN THỨC CHUYÊN SÂU THEO DỰ ÁN SAKEGO
+      // ══════════════════════════════════════════════════════════
+      } else if (has('dinh dưỡng', 'chất gì', 'usda', 'kali', 'vitamin', 'carbohydrate', 'năng lượng', 'giá trị dinh dưỡng', 'thành phần dinh dưỡng')) {
+        botReply = '📊 Theo cơ sở dữ liệu USDA, trong 100g sa kê tươi chứa khoảng 103 kcal, 27g carbohydrate phức, 4.9g chất xơ, 17mg vitamin C và 490mg kali! 💪 Đặc biệt, sa kê hoàn toàn không chứa gluten (gluten-free), cực kỳ an toàn cho khoảng 80 triệu người mắc bệnh Celiac trên thế giới. Dinh dưỡng từ sa kê giúp no lâu, bảo vệ tim mạch và hỗ trợ hệ tiêu hóa rất tốt ạ! 🌿';
+
+      } else if (has('nông nghiệp', 'bền vững', 'khí hậu', 'xâm nhập mặn', 'đồng bằng sông cửu long', 'đbscl', 'nông dân', 'hợp tác xã', 'thất thoát')) {
+        botReply = '🌱 Tại Đồng bằng sông Cửu Long, sa kê là cây trồng có tiềm năng thích ứng cực tốt với hạn hán và xâm nhập mặn (theo FAO). 🤝 SAKEGO đang xây dựng chuỗi giá trị tích hợp, liên kết chặt chẽ với Hợp tác xã Đồng Xanh, Công ty TNHH Sa Kê Toàn Cầu và người nông dân. Mô hình này tạo đầu ra ổn định, giảm tỷ lệ thất thoát sau thu hoạch (thường ở mức 25-32%) và cải thiện sinh kế bền vững! 🌾';
+
+      } else if (has('sakego là gì', 'ý nghĩa tên', 'sakego nghĩa là gì', 'tại sao tên sakego', 'tên gọi sakego', 'thông điệp')) {
+        botReply = '✨ Tên gọi SAKEGO là sự kết hợp giữa "SAKE" (cây sa kê - nguyên liệu cốt lõi) và "GO" (tinh thần tiến về phía trước, vươn xa). 🚀 Thông điệp mà thương hiệu hướng tới là "Nâng tầm nông sản Việt", đưa cây sa kê từ một loại quả dân dã thành hệ sinh thái thực phẩm giá trị cao trong ngành thực phẩm hiện đại! 🌿';
+
+      } else if (has('ai thành lập', 'người sáng lập', 'thành viên', 'nhóm', 'team', 'founder', 'sáng lập')) {
+        botReply = '👥 Dự án SAKEGO được thành lập và phát triển bởi 5 thành viên tâm huyết:\n1. Trương Tử Hoài Ngọc (Nhóm trưởng - Chiến lược sản phẩm)\n2. Nguyễn Văn Nghĩa (Nghiên cứu thị trường)\n3. Trần Thị Loan Anh (Phát triển vùng trồng)\n4. Phạm Thị Anh Thư (Thiết kế thương hiệu)\n5. Phạm Duy Phương (Vận hành và chất lượng)\n✨ Tụi mình cùng chung sứ mệnh "Nâng tầm nông sản Việt"! 🚀';
+
+      } else if (has('nguyễn văn nghĩa', 'văn nghĩa', 'nghĩa', 'nghia')) {
+        botReply = '😎 À, bạn đang nhắc đến anh Nguyễn Văn Nghĩa! Anh ấy là founder siêu đẹp trai của SAKEGO đó nha! Không những vậy, anh ấy còn là người đã tự tay làm ra toàn bộ hệ thống website xịn sò của SAKEGO này đấy! Quá dữ luôn đúng không? 🚀👨‍💻';
+
+      } else if (has('khác biệt', 'cạnh tranh', 'lean startup', 'mvp', 'đổi mới', 'sáng tạo', 'công nghệ', 'uht', 'catech', 'vrio')) {
+        botReply = '💡 Điểm khác biệt lớn nhất của SAKEGO nằm ở mô hình kinh doanh hệ sinh thái và ứng dụng công nghệ! 🔬 Tụi mình áp dụng phương pháp Lean Startup (chu trình Build-Measure-Learn), công nghệ tiệt trùng UHT cho sữa gạo, và kiểm nghiệm vi sinh tại CATECH Cần Thơ. Những nguồn lực này đáp ứng tiêu chuẩn VRIO (Barney, 1991), tạo nên lợi thế cạnh tranh bền vững độc quyền cho SAKEGO! 🚀';
+
+      } else if (has('tương lai', 'định hướng', 'sắp tới', 'sản phẩm mới', 'ocop', 'phát triển')) {
+        botReply = '🔮 Trong tương lai, SAKEGO không chỉ dừng lại ở Trà, Mochi và Sữa Gạo đâu nha! 🌟 Tụi mình đang định hướng nghiên cứu thêm snack sa kê, mì không gluten, tinh bột sa kê và trà túi lọc. Đồng thời, dự án mục tiêu tham gia chương trình OCOP, mở rộng mô hình nhượng quyền và vươn ra thị trường quốc tế! 🚀 Hãy luôn đồng hành cùng SAKEGO nhé!';
 
       } else if (has('bà bầu', 'mang thai', 'thai kỳ', 'thai phụ')) {
         botReply = '🤰 Phụ nữ mang thai dùng sản phẩm SAKEGO rất an toàn! Sa kê giàu acid folic tốt cho thai nhi, vitamin và khoáng chất hỗ trợ mẹ bầu khỏe mạnh. 🍵 Tuy nhiên nên tham khảo ý kiến bác sĩ về liều lượng phù hợp và ưu tiên Sữa Gạo Sa Kê hoặc Trà Lá Sa Kê (lượng nhỏ). Tránh dùng quá nhiều sản phẩm ngọt nhé bạn!';
