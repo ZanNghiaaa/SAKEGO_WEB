@@ -1737,12 +1737,14 @@
     }
     
     .story-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         gap: 50px;
     }
     
     .story-content {
         padding-left: 0;
+        max-width: 100%;
+        overflow: hidden;
     }
     
     .section-title {
@@ -1778,7 +1780,28 @@
 
 @media (max-width: 768px) {
     .about-hero {
-        padding: 100px 0 90px;
+        min-height: auto;
+        padding: 100px 10px 40px;
+    }
+
+    .about-hero-badges {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 8px;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        width: 100%;
+        justify-content: flex-start;
+    }
+    .about-hero-badges::-webkit-scrollbar {
+        display: none;
+    }
+
+    .about-hero-badge {
+        flex-shrink: 0;
+        padding: 6px 14px;
+        font-size: 11px;
     }
 
     .thuc-trang-hero {
@@ -1786,11 +1809,13 @@
     }
     
     .hero-title {
-        font-size: 36px;
+        font-size: clamp(28px, 8vw, 36px);
+        margin-bottom: 8px;
     }
     
     .hero-description {
-        font-size: 17px;
+        font-size: clamp(14px, 4vw, 16px);
+        margin-bottom: 15px;
     }
 
     .thuc-trang-title {
@@ -1815,42 +1840,105 @@
     .esg-section,
     .values-section,
     .process-section {
-        padding: 60px 0;
+        padding: 40px 10px;
     }
     
     .section-title {
-        font-size: 32px;
+        font-size: clamp(24px, 7vw, 30px);
     }
     
     .story-stats {
-        grid-template-columns: 1fr;
-        gap: 20px;
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 15px;
+        padding-bottom: 10px;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
     }
-
-    .team-stories-grid {
-        grid-template-columns: 1fr;
-        gap: 18px;
-    }
-
-    .team-story-card {
-        padding: 22px 20px;
-    }
-
-    .team-story-photo-wrap {
-        width: 72px;
-        height: 72px;
-        flex: 0 0 72px;
+    .story-stats::-webkit-scrollbar {
+        display: none;
     }
     
+    .stat-item {
+        flex: 0 0 auto;
+        min-width: 140px;
+    }
+
+    .team-accordion {
+        flex-direction: row;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        gap: 15px;
+        padding-bottom: 20px;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        height: 400px;
+    }
+
+    .team-accordion::-webkit-scrollbar {
+        display: none;
+    }
+
+    .team-acc-item {
+        flex: 0 0 85%;
+        scroll-snap-align: center;
+        border-radius: 16px;
+        min-height: auto;
+        height: 100%;
+    }
+
+    .team-acc-item.active {
+        flex: 0 0 85%;
+        min-height: auto;
+        transform: scale(1.02);
+    }
+
+    .team-acc-title-vertical {
+        transform: none;
+        bottom: 20px;
+        left: 20px;
+        font-size: 18px;
+    }
+
+    .values-grid,
+    .process-timeline {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        gap: 15px;
+        padding-bottom: 20px;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .values-grid::-webkit-scrollbar,
+    .process-timeline::-webkit-scrollbar {
+        display: none;
+    }
+
+    .value-card {
+        flex: 0 0 85%;
+        scroll-snap-align: center;
+        padding: 24px 20px;
+        border-radius: 16px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    }
+    
+    .process-step {
+        flex: 0 0 85%;
+        scroll-snap-align: center;
+    }
+
     .image-badge {
         bottom: 20px;
         right: 20px;
         padding: 15px 20px;
-    }
-    
-    .process-timeline {
-        grid-template-columns: 1fr;
-        gap: 40px;
     }
     
     .cta-content h2 {

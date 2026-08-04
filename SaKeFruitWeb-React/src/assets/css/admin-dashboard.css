@@ -991,7 +991,15 @@
 
 .modal-close:hover { background: rgba(239,68,68,0.1); color: #ef4444; border-color: rgba(239,68,68,0.3); }
 
-.modal-body { padding: 22px; overflow-y: auto; flex: 1; }
+.modal-body { padding: 22px; overflow-y: auto; flex: 1; min-height: 0; }
+
+.modal-content form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
 
 .modal-footer {
   padding: 14px 22px;

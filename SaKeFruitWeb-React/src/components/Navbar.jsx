@@ -188,16 +188,20 @@ const Navbar = () => {
             </div>
           </div>
           
-          {/* Combined Menu Button for Mobile */}
-          <div className="combined-menu-wrapper">
-            <button 
-              className="combined-menu-btn"
-              onClick={() => setShowCombinedMenu(!showCombinedMenu)}
-            >
-              <i className="fas fa-bars"></i>
-              <span>MENU</span>
-            </button>
+          {/* Mobile Nav Tools (Search + Menu) */}
+          <div className="mobile-nav-tools">
+            <div className="mobile-search-bar">
+              <input type="text" placeholder="Tìm kiếm sản phẩm..." />
+              <button><i className="fas fa-search"></i></button>
+            </div>
             
+            <div className="combined-menu-wrapper">
+              <button 
+                className="combined-menu-btn"
+                onClick={() => setShowCombinedMenu(!showCombinedMenu)}
+              >
+                <i className="fas fa-bars"></i>
+              </button>
             {showCombinedMenu && (
               <>
                 <div 
@@ -236,6 +240,7 @@ const Navbar = () => {
                 </div>
               </>
             )}
+            </div>
           </div>
 
           {/* Desktop Navigation Menu */}
