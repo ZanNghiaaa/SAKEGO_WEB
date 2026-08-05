@@ -3,6 +3,14 @@
 
 const sampleProducts = [
   {
+    id: 'hop-tra-la-sake',
+    name: 'Hộp trà lá sake',
+    price: 50000,
+    image: '/assets/images/hoptrasake.png',
+    description: 'Hộp trà lá Sake cao cấp, thơm ngon và tốt cho sức khỏe. Trọng lượng: 75g',
+    category: 'tea',
+  },
+  {
     id: 'tra-sake',
     name: 'Trà SAKE',
     price: 10000,
