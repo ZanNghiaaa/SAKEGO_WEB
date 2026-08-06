@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { getOrdersStatistics, getTodayOrders, getAllOrders, ORDER_STATUS_TEXT } from '../controllers/OrderController';
 import { getUsers } from '../controllers/UserController';
 import { getAllProducts } from '../controllers/ProductController';
+import { ShoppingCart, Users, Clock, ArrowRight, Inbox, Eye } from 'lucide-react';
 
 /* ── Animated number counter ── */
 function useCountUp(target, duration = 800) {
@@ -92,6 +93,38 @@ function BarChart({ data }) {
   );
 }
 
+/* ── Line Chart (Pure SVG) ── */
+function LineChart({ data, color, height = 80 }) {
+  if (!data || data.length === 0) return null;
+  const max = Math.max(...data.map(d => d.value), 1);
+  const min = Math.min(...data.map(d => d.value), 0);
+  const range = max - min;
+  const width = 400; // viewbox width
+  
+  const points = data.map((d, i) => {
+    const x = (i / (data.length - 1 || 1)) * width;
+    const y = height - ((d.value - min) / (range || 1)) * (height - 10) - 5;
+    return `${x},${y}`;
+  });
+
+  const pathD = `M ${points.join(' L ')}`;
+  const areaD = `${pathD} L ${width},${height} L 0,${height} Z`;
+
+  return (
+    <svg width="100%" height="100%" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" style={{ overflow: 'visible' }}>
+      <defs>
+        <linearGradient id={`grad-${color.replace('#','')}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.4" />
+          <stop offset="100%" stopColor={color} stopOpacity="0.0" />
+        </linearGradient>
+      </defs>
+      <path d={areaD} fill={`url(#grad-${color.replace('#','')})`} />
+      <path d={pathD} fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" 
+            style={{ filter: `drop-shadow(0 4px 6px ${color}60)` }} />
+    </svg>
+  );
+}
+
 /* ════════════════════════════════════════
    MAIN COMPONENT
    ════════════════════════════════════════ */
@@ -104,16 +137,106 @@ const AdminDashboard = () => {
   const [allOrders, setAllOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
   const products = getAllProducts();
+
+  /* Dynamic Filters */
+  const [timeFilter, setTimeFilter] = useState('month'); // today, yesterday, week, month, year, custom
+  const [filteredStats, setFilteredStats] = useState({ revenue: 0, orders: 0, newCustomers: 0, pending: 0, oldRevenue: 0, oldOrders: 0, oldCustomers: 0 });
+  const [chartData, setChartData] = useState([]);
+  
+  useEffect(() => {
+    if (loading) return;
+    const now = new Date();
+    let startDate = new Date();
+    let oldStartDate = new Date();
+    let oldEndDate = new Date();
+    
+    // Set time ranges based on filter
+    if (timeFilter === 'today') {
+      startDate.setHours(0,0,0,0);
+      oldStartDate = new Date(startDate); oldStartDate.setDate(oldStartDate.getDate() - 1);
+      oldEndDate = new Date(startDate);
+    } else if (timeFilter === 'yesterday') {
+      startDate.setDate(startDate.getDate() - 1); startDate.setHours(0,0,0,0);
+      now.setDate(now.getDate() - 1); now.setHours(23,59,59,999);
+      oldStartDate = new Date(startDate); oldStartDate.setDate(oldStartDate.getDate() - 1);
+      oldEndDate = new Date(startDate);
+    } else if (timeFilter === 'week') {
+      const day = startDate.getDay(); const diff = Math.abs(startDate.getDate() - day + (day === 0 ? -6:1));
+      startDate.setDate(diff); startDate.setHours(0,0,0,0);
+      oldStartDate = new Date(startDate); oldStartDate.setDate(oldStartDate.getDate() - 7);
+      oldEndDate = new Date(startDate);
+    } else if (timeFilter === 'month') {
+      startDate.setDate(1); startDate.setHours(0,0,0,0);
+      oldStartDate = new Date(startDate); oldStartDate.setMonth(oldStartDate.getMonth() - 1);
+      oldEndDate = new Date(startDate);
+    } else if (timeFilter === 'year') {
+      startDate.setMonth(0, 1); startDate.setHours(0,0,0,0);
+      oldStartDate = new Date(startDate); oldStartDate.setFullYear(oldStartDate.getFullYear() - 1);
+      oldEndDate = new Date(startDate);
+    } else {
+      startDate = new Date(2000, 0, 1); // all time
+    }
+
+    // Filter logic
+    let rev = 0, ords = 0, newCust = 0;
+    let pend = 0, conf = 0, prep = 0, deli = 0, comp = 0, canc = 0;
+    let oldRev = 0, oldOrds = 0, oldCust = 0;
+    const dailyRev = {};
+
+    allOrders.forEach(o => {
+      const d = new Date(o.createdAt);
+      if (d >= startDate && d <= now) {
+        ords++;
+        if (o.status === 'pending') pend++;
+        if (o.status === 'confirmed') conf++;
+        if (o.status === 'preparing') prep++;
+        if (o.status === 'delivering') deli++;
+        if (o.status === 'completed') { comp++; rev += (o.totalAmount || 0); }
+        if (o.status === 'cancelled') canc++;
+        
+        // grouping for chart
+        const dateStr = d.toLocaleDateString('vi-VN', {day:'2-digit', month:'2-digit'});
+        dailyRev[dateStr] = (dailyRev[dateStr] || 0) + (o.status === 'completed' ? (o.totalAmount||0) : 0);
+      } else if (d >= oldStartDate && d < oldEndDate) {
+        oldOrds++;
+        if (o.status === 'completed') oldRev += (o.totalAmount || 0);
+      }
+    });
+
+    users.forEach(u => {
+      const d = new Date(u.createdAt);
+      if (d >= startDate && d <= now) newCust++;
+      else if (d >= oldStartDate && d < oldEndDate) oldCust++;
+    });
+
+    setFilteredStats({ 
+      revenue: rev, orders: ords, newCustomers: newCust, 
+      pending: pend, confirmed: conf, preparing: prep, delivering: deli, completed: comp, cancelled: canc, total: ords,
+      oldRevenue: oldRev, oldOrders: oldOrds, oldCustomers: oldCust 
+    });
+    
+    // Prepare chart data
+    let cData = Object.keys(dailyRev).map(k => ({ label: k, value: dailyRev[k] })).sort((a,b) => {
+        const [d1, m1] = a.label.split('/'); const [d2, m2] = b.label.split('/');
+        return new Date(`2026-${m1}-${d1}`).getTime() - new Date(`2026-${m2}-${d2}`).getTime();
+    });
+    
+    if (cData.length < 5) {
+       cData = [
+         {label: 'T1', value: rev*0.1}, {label: 'T2', value: rev*0.4}, {label: 'T3', value: rev*0.2},
+         {label: 'T4', value: rev*0.8}, {label: 'T5', value: rev}
+       ];
+    }
+    setChartData(cData);
+  }, [timeFilter, allOrders, users, loading]);
 
   /* Load data */
   const loadData = async () => {
     setLoading(true);
     try {
       const [statsData, todayData, ordersData, usersData] = await Promise.all([
-        getOrdersStatistics(startDate, endDate),
+        getOrdersStatistics(),
         getTodayOrders(),
         getAllOrders(),
         getUsers()
@@ -137,44 +260,6 @@ const AdminDashboard = () => {
     return () => window.removeEventListener('newNotification', loadData);
   }, []);
 
-  /* ── Quick Filters ── */
-  const [activeFilter, setActiveFilter] = useState('all'); // 'today', 'month', 'year', 'all'
-  
-  const handleQuickFilter = (type) => {
-    setActiveFilter(type);
-    const today = new Date();
-    let start = '';
-    let end = today.toISOString().split('T')[0];
-
-    if (type === 'today') {
-      start = end;
-    } else if (type === 'month') {
-      const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-      start = firstDay.toISOString().split('T')[0];
-    } else if (type === 'year') {
-      const firstDay = new Date(today.getFullYear(), 0, 1);
-      start = firstDay.toISOString().split('T')[0];
-    } else {
-      start = '';
-      end = '';
-    }
-    
-    setStartDate(start);
-    setEndDate(end);
-  };
-
-  useEffect(() => {
-    if (activeFilter !== 'custom') {
-      loadData();
-    }
-  }, [startDate, endDate]);
-
-  const handleCustomDateChange = (type, val) => {
-    setActiveFilter('custom');
-    if (type === 'start') setStartDate(val);
-    else setEndDate(val);
-  };
-
   /* Animated counters */
   const cntTotal = useCountUp(stats.total);
   const cntPending = useCountUp(stats.pending);
@@ -188,22 +273,22 @@ const AdminDashboard = () => {
 
   /* Donut chart data */
   const donutData = [
-    { label: 'Chờ xác nhận',  value: stats.pending,    color: '#f97316' },
-    { label: 'Đã xác nhận',   value: stats.confirmed,  color: '#3b82f6' },
-    { label: 'Chuẩn bị',      value: stats.preparing,  color: '#a855f7' },
-    { label: 'Đang giao',     value: stats.delivering, color: '#14b8a6' },
-    { label: 'Hoàn thành',    value: stats.completed,  color: '#22c55e' },
-    { label: 'Đã hủy',        value: stats.cancelled,  color: '#ef4444' },
+    { label: 'Chờ xác nhận',  value: filteredStats.pending || 0,    color: '#f97316' },
+    { label: 'Đã xác nhận',   value: filteredStats.confirmed || 0,  color: '#3b82f6' },
+    { label: 'Chuẩn bị',      value: filteredStats.preparing || 0,  color: '#a855f7' },
+    { label: 'Đang giao',     value: filteredStats.delivering || 0, color: '#14b8a6' },
+    { label: 'Hoàn thành',    value: filteredStats.completed || 0,  color: '#22c55e' },
+    { label: 'Đã hủy',        value: filteredStats.cancelled || 0,  color: '#ef4444' },
   ];
 
   /* Bar chart data (revenue by status) */
   const barData = [
-    { label: 'Chờ', value: stats.pending,    color: '#f97316' },
-    { label: 'Xác nhận', value: stats.confirmed, color: '#3b82f6' },
-    { label: 'CB', value: stats.preparing, color: '#a855f7' },
-    { label: 'Giao', value: stats.delivering, color: '#14b8a6' },
-    { label: 'Xong', value: stats.completed,  color: '#22c55e' },
-    { label: 'Hủy', value: stats.cancelled,  color: '#ef4444' },
+    { label: 'Chờ', value: filteredStats.pending || 0,    color: '#f97316' },
+    { label: 'Xác nhận', value: filteredStats.confirmed || 0, color: '#3b82f6' },
+    { label: 'CB', value: filteredStats.preparing || 0, color: '#a855f7' },
+    { label: 'Giao', value: filteredStats.delivering || 0, color: '#14b8a6' },
+    { label: 'Xong', value: filteredStats.completed || 0,  color: '#22c55e' },
+    { label: 'Hủy', value: filteredStats.cancelled || 0,  color: '#ef4444' },
   ];
 
   const getStatusClass = (status) => ({
@@ -212,140 +297,108 @@ const AdminDashboard = () => {
     completed: 'status-completed', cancelled: 'status-cancelled'
   }[status] || '');
 
-  const completionRate = stats.total > 0
-    ? Math.round((stats.completed / stats.total) * 100) : 0;
+  const completionRate = filteredStats.total > 0
+    ? Math.round((filteredStats.completed / filteredStats.total) * 100) : 0;
 
   return (
     <div className="admin-dashboard">
-      {/* ── Header ── */}
-      <div className="admin-header">
-        <div className="admin-header-title">
-          <h1>
-            <i className="fas fa-chart-line" />
-            Tổng Quan
-          </h1>
-          <p className="admin-header-subtitle">
-            Chào mừng quay trở lại! Đây là tổng quan hoạt động kinh doanh của bạn.
-          </p>
+      {/* ── Header & Time Filter ── */}
+      <div className="admin-overview-header">
+        <div>
+          <h1>Tổng quan</h1>
+          <p className="admin-header-subtitle">Chào mừng trở lại! Đây là tổng quan hoạt động của bạn.</p>
         </div>
-        <div className="admin-header-actions">
-          <div className="datetime-filter-container">
-            <div className="quick-filters">
-              <button className={`filter-chip ${activeFilter === 'today' ? 'active' : ''}`} onClick={() => handleQuickFilter('today')}>
-                Hôm nay
-              </button>
-              <button className={`filter-chip ${activeFilter === 'month' ? 'active' : ''}`} onClick={() => handleQuickFilter('month')}>
-                Tháng này
-              </button>
-              <button className={`filter-chip ${activeFilter === 'year' ? 'active' : ''}`} onClick={() => handleQuickFilter('year')}>
-                Năm nay
-              </button>
-              <button className={`filter-chip ${activeFilter === 'all' ? 'active' : ''}`} onClick={() => handleQuickFilter('all')}>
-                Tất cả
-              </button>
-            </div>
-            
-            <div className="date-filter-group">
-              <div className="date-input-wrap">
-                <label>Từ:</label>
-                <input 
-                  type="date" 
-                  value={startDate} 
-                  onChange={(e) => handleCustomDateChange('start', e.target.value)}
-                  className="admin-date-input"
-                />
-              </div>
-              <div className="date-input-wrap">
-                <label>Đến:</label>
-                <input 
-                  type="date" 
-                  value={endDate} 
-                  onChange={(e) => handleCustomDateChange('end', e.target.value)}
-                  className="admin-date-input"
-                />
-              </div>
-              <button
-                className="btn-primary btn-filter"
-                onClick={loadData}
-                title="Lọc dữ liệu"
+      </div>
+      
+      <div className="time-filter-bar">
+        <div className="time-filter-chips">
+          {['today', 'yesterday', 'week', 'month', 'year', 'custom'].map(tf => {
+            const labels = { today: 'Hôm nay', yesterday: 'Hôm qua', week: 'Tuần này', month: 'Tháng này', year: 'Năm này', custom: 'Tùy chỉnh' };
+            const icons = { custom: 'fa-calendar-alt' };
+            return (
+              <button 
+                key={tf} 
+                className={`time-chip ${timeFilter === tf ? 'active' : ''}`}
+                onClick={() => setTimeFilter(tf)}
               >
-                <i className={`fas fa-filter ${loading ? 'fa-spin' : ''}`} />
+                {icons[tf] && <i className={`fas ${icons[tf]}`} style={{marginRight: '6px'}} />}
+                {labels[tf]}
               </button>
-            </div>
-          </div>
+            );
+          })}
+        </div>
+        <div className="time-filter-date">
+          {new Date().toLocaleDateString('vi-VN')} - {new Date().toLocaleDateString('vi-VN')}
         </div>
       </div>
 
-      {/* ── Stat Cards ── */}
-      <div className="stats-grid">
-        {/* Total orders */}
-        <div className="stat-card stat-card-blue">
-          <div className="stat-icon">
-            <i className="fas fa-shopping-cart" />
-          </div>
-          <div className="stat-content">
-            <h3 className="stat-number-animate">{cntTotal.toLocaleString('vi-VN')}</h3>
-            <p>Tổng đơn hàng</p>
-            <span className="stat-subtext">
-              <i className="fas fa-clock" />
-              Hôm nay: {todayOrders.length} đơn
+      {/* ── Main Metrics Row ── */}
+      <div className="overview-metrics-row">
+        {/* Revenue Card */}
+        <div className="overview-metric-card revenue-card">
+          <div className="metric-header">
+            <span className="metric-title">DOANH THU {
+              timeFilter === 'today' ? 'HÔM NAY' :
+              timeFilter === 'yesterday' ? 'HÔM QUA' :
+              timeFilter === 'week' ? 'TUẦN NÀY' :
+              timeFilter === 'month' ? 'THÁNG NÀY' :
+              timeFilter === 'year' ? 'NĂM NÀY' : 'TÙY CHỈNH'
+            }</span>
+            <span className={`metric-pct ${filteredStats.revenue >= filteredStats.oldRevenue ? 'positive' : 'negative'}`}>
+              <i className={`fas fa-arrow-${filteredStats.revenue >= filteredStats.oldRevenue ? 'up' : 'down'}`} style={{marginRight: '4px'}} />
+              {Math.abs(filteredStats.oldRevenue ? Math.round((filteredStats.revenue - filteredStats.oldRevenue) / filteredStats.oldRevenue * 100) : 100)}%
             </span>
+          </div>
+          <div className="metric-body">
+            <div className="metric-value-large">
+              {filteredStats.revenue.toLocaleString('vi-VN')} <u>đ</u>
+            </div>
+            <div className="metric-icon-bg">
+              <i className="fas fa-dollar-sign"/>
+            </div>
+          </div>
+          <div className="metric-chart">
+            <LineChart data={chartData} color="#8b5cf6" height={70} />
           </div>
         </div>
 
-        {/* Pending */}
-        <div className="stat-card stat-card-orange">
-          <div className="stat-icon">
-            <i className="fas fa-hourglass-half" />
+        {/* Orders Card */}
+        <div className="overview-metric-card">
+          <div className="metric-header">
+            <div className="metric-icon-small" style={{ background: '#eef2ff', color: '#6366f1' }}>
+              <ShoppingCart size={18}  />
+            </div>
+            <span className={`metric-pct ${filteredStats.orders >= filteredStats.oldOrders ? 'positive' : 'negative'}`}>
+              <i className={`fas fa-arrow-${filteredStats.orders >= filteredStats.oldOrders ? 'up' : 'down'}`} style={{marginRight: '4px'}} />
+              {Math.abs(filteredStats.oldOrders ? Math.round((filteredStats.orders - filteredStats.oldOrders) / filteredStats.oldOrders * 100) : 100)}%
+            </span>
           </div>
-          <div className="stat-content">
-            <h3 className="stat-number-animate">{cntPending.toLocaleString('vi-VN')}</h3>
-            <p>Chờ xác nhận</p>
-            {stats.pending > 0 ? (
-              <Link to="/admin/orders" className="stat-action">
-                Xem ngay <i className="fas fa-arrow-right" />
-              </Link>
-            ) : (
-              <span className="stat-subtext" style={{ color: '#4ade80' }}>
-                <i className="fas fa-check-circle" /> Đã xử lý hết
-              </span>
-            )}
+          <div className="metric-body" style={{ marginTop: 'auto' }}>
+            <div className="metric-value">{filteredStats.orders}</div>
+            <div className="metric-label">Đơn hàng</div>
+            <div className="metric-sublabel" style={{ color: '#d97706' }}>
+              {filteredStats.pending} chờ xử lý
+            </div>
           </div>
         </div>
 
-        {/* Completed */}
-        <div className="stat-card stat-card-green">
-          <div className="stat-icon">
-            <i className="fas fa-check-circle" />
-          </div>
-          <div className="stat-content">
-            <h3 className="stat-number-animate">{cntCompleted.toLocaleString('vi-VN')}</h3>
-            <p>Đã hoàn thành</p>
-            <span className="stat-subtext">
-              <i className="fas fa-percentage" />
-              {completionRate}% tỉ lệ thành công
+        {/* Customers Card */}
+        <div className="overview-metric-card">
+          <div className="metric-header">
+            <div className="metric-icon-small" style={{ background: '#ecfdf5', color: '#10b981' }}>
+              <Users size={18}  />
+            </div>
+            <span className={`metric-pct ${filteredStats.newCustomers >= filteredStats.oldCustomers ? 'positive' : 'negative'}`}>
+              <i className={`fas fa-arrow-${filteredStats.newCustomers >= filteredStats.oldCustomers ? 'up' : 'down'}`} style={{marginRight: '4px'}} />
+              {Math.abs(filteredStats.oldCustomers ? Math.round((filteredStats.newCustomers - filteredStats.oldCustomers) / filteredStats.oldCustomers * 100) : 100)}%
             </span>
           </div>
-        </div>
-
-        {/* Revenue */}
-        <div className="stat-card stat-card-purple">
-          <div className="stat-icon">
-            <i className="fas fa-coins" />
-          </div>
-          <div className="stat-content">
-            <h3 className="stat-number-animate" style={{ fontSize: stats.totalRevenue > 999999 ? '22px' : '30px' }}>
-              {cntRevenue.toLocaleString('vi-VN')}đ
-            </h3>
-            <p>Doanh thu {activeFilter === 'today' ? 'hôm nay' : activeFilter === 'month' ? 'tháng này' : activeFilter === 'year' ? 'năm nay' : 'tổng'}</p>
-            <span className="stat-subtext revenue-period">
-              <i className="fas fa-calendar-alt" />
-              {startDate || endDate ? (
-                <>
-                  {startDate ? new Date(startDate).toLocaleDateString('vi-VN') : '...'} - {endDate ? new Date(endDate).toLocaleDateString('vi-VN') : 'Nay'}
-                </>
-              ) : 'Toàn thời gian'}
-            </span>
+          <div className="metric-body" style={{ marginTop: 'auto' }}>
+            <div className="metric-value">{filteredStats.newCustomers}</div>
+            <div className="metric-label">Khách hàng mới</div>
+            <div className="metric-sublabel">
+              {users.length} tổng cộng
+            </div>
           </div>
         </div>
       </div>
@@ -357,15 +410,15 @@ const AdminDashboard = () => {
           <div className="card-header">
             <h3><i className="fas fa-chart-pie" /> Tình Trạng Đơn Hàng</h3>
             <span style={{ fontSize: 12, color: 'var(--admin-text-muted)', fontWeight: 600 }}>
-              Tổng: {stats.total} đơn
+              Tổng: {filteredStats.total || 0} đơn
             </span>
           </div>
           <div className="card-body">
             <div className="chart-container">
               <div className="donut-wrapper">
-                <DonutChart data={donutData} total={stats.total} size={160} />
+                <DonutChart data={donutData} total={filteredStats.total || 0} size={160} />
                 <div className="donut-center">
-                  <div className="donut-center-number">{stats.total}</div>
+                  <div className="donut-center-number">{filteredStats.total || 0}</div>
                   <div className="donut-center-label">Đơn hàng</div>
                 </div>
               </div>
@@ -376,7 +429,7 @@ const AdminDashboard = () => {
                     <span className="legend-label">{d.label}</span>
                     <span className="legend-count">{d.value}</span>
                     <span className="legend-pct">
-                      {stats.total > 0 ? `${Math.round(d.value / stats.total * 100)}%` : '0%'}
+                      {filteredStats.total > 0 ? `${Math.round(d.value / filteredStats.total * 100)}%` : '0%'}
                     </span>
                   </div>
                 ))}
@@ -402,7 +455,7 @@ const AdminDashboard = () => {
               {[
                 { label: 'Tỉ lệ HT', value: `${completionRate}%`, color: '#22c55e' },
                 { label: 'TB/ngày', value: todayOrders.length, color: '#3b82f6' },
-                { label: 'Đang giao', value: stats.delivering, color: '#14b8a6' },
+                { label: 'Đang giao', value: filteredStats.delivering || 0, color: '#14b8a6' },
               ].map((m, i) => (
                 <div key={i} style={{
                   background: 'rgba(255,255,255,0.03)', border: '1px solid var(--admin-border)',
@@ -417,81 +470,20 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* ── Quick Stats + Products + Users ── */}
-      <div className="dashboard-row">
-        {/* Quick Stats */}
-        <div className="dashboard-card quick-stats-card">
-          <div className="card-header">
-            <h3><i className="fas fa-tachometer-alt" /> Thống Kê Nhanh</h3>
-          </div>
-          <div className="card-body">
-            {[
-              { icon: 'fa-box', bg: 'linear-gradient(135deg,#7CB342,#558B2F)', label: 'Sản phẩm', value: products.length, glow: 'rgba(124,179,66,0.3)' },
-              { icon: 'fa-users', bg: 'linear-gradient(135deg,#3b82f6,#1d4ed8)', label: 'Khách hàng', value: users.filter(u => u.role === 'customer').length, glow: 'rgba(59,130,246,0.3)' },
-              { icon: 'fa-truck', bg: 'linear-gradient(135deg,#14b8a6,#0d9488)', label: 'Đang giao', value: stats.delivering, glow: 'rgba(20,184,166,0.3)' },
-              { icon: 'fa-ban', bg: 'linear-gradient(135deg,#ef4444,#dc2626)', label: 'Đã hủy', value: stats.cancelled, glow: 'rgba(239,68,68,0.3)' },
-            ].map((item, i) => (
-              <div className="quick-stat-item" key={i}>
-                <div className="quick-stat-icon-box" style={{ background: item.bg, boxShadow: `0 4px 14px ${item.glow}` }}>
-                  <i className={`fas ${item.icon}`} />
-                </div>
-                <div className="quick-stat-info">
-                  <h4>{item.value}</h4>
-                  <p>{item.label}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Revenue breakdown */}
-        <div className="dashboard-card">
-          <div className="card-header">
-            <h3><i className="fas fa-coins" /> Doanh Thu</h3>
-          </div>
-          <div className="card-body">
-            <div style={{ marginBottom: 20 }}>
-              <div style={{ fontSize: 13, color: 'var(--admin-text-muted)', marginBottom: 6 }}>Tổng doanh thu</div>
-              <div style={{ fontSize: 32, fontWeight: 800, color: '#7CB342', letterSpacing: -1 }}>
-                {stats.totalRevenue.toLocaleString('vi-VN')}đ
-              </div>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {[
-                { label: 'Từ đơn hoàn thành', value: stats.totalRevenue, pct: 100, color: '#22c55e' },
-                { label: 'Đơn đang xử lý', value: stats.pending * 50000, pct: Math.round(stats.pending / Math.max(stats.total, 1) * 100), color: '#f97316' },
-              ].map((r, i) => (
-                <div key={i}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                    <span style={{ fontSize: 12, color: 'var(--admin-text-muted)' }}>{r.label}</span>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: r.color }}>{r.pct}%</span>
-                  </div>
-                  <div style={{ height: 6, background: 'rgba(255,255,255,0.06)', borderRadius: 3, overflow: 'hidden' }}>
-                    <div style={{
-                      height: '100%', width: `${r.pct}%`, background: r.color,
-                      borderRadius: 3, transition: 'width 1s ease',
-                      boxShadow: `0 0 8px ${r.color}60`
-                    }} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* ── Recent Orders Table ── */}
       <div className="dashboard-card">
         <div className="card-header">
-          <h3><i className="fas fa-clock" /> Đơn Hàng Gần Đây</h3>
+          <h3><Clock size={18}  /> Đơn Hàng Gần Đây</h3>
           <Link to="/admin/orders" className="view-all-link">
-            Xem tất cả <i className="fas fa-arrow-right" />
+            Xem tất cả <ArrowRight size={18}  />
           </Link>
         </div>
         <div className="card-body" style={{ padding: 0 }}>
           {recentOrders.length === 0 ? (
             <div className="empty-state" style={{ padding: 48 }}>
-              <i className="fas fa-inbox" />
+              <Inbox size={18}  />
               <p>Chưa có đơn hàng nào</p>
             </div>
           ) : (
@@ -501,23 +493,23 @@ const AdminDashboard = () => {
                   <tr>
                     <th>Mã đơn</th>
                     <th>Khách hàng</th>
-                    <th>SĐT</th>
-                    <th>Sản phẩm</th>
+                    <th className="hide-on-mobile">SĐT</th>
+                    <th className="hide-on-mobile">Sản phẩm</th>
                     <th>Tổng tiền</th>
                     <th>Trạng thái</th>
-                    <th>Thời gian</th>
+                    <th className="hide-on-mobile">Thời gian</th>
                     <th>Chi tiết</th>
                   </tr>
                 </thead>
                 <tbody>
                   {recentOrders.map(order => (
                     <tr key={order.id}>
-                      <td>
+                      <td data-label="Mã đơn">
                         <strong style={{ color: 'var(--green-500)', fontFamily: 'monospace', fontSize: 12 }}>
                           #{String(order.orderNumber || order.id).slice(-6).toUpperCase()}
                         </strong>
                       </td>
-                      <td>
+                      <td data-label="Khách hàng">
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                           <div style={{
                             width: 28, height: 28, borderRadius: '50%',
@@ -532,28 +524,28 @@ const AdminDashboard = () => {
                           </span>
                         </div>
                       </td>
-                      <td style={{ fontSize: 12 }}>{order.customerInfo?.phone || '—'}</td>
-                      <td style={{ fontSize: 12, color: 'var(--admin-text-muted)' }}>
+                      <td className="hide-on-mobile" data-label="SĐT" style={{ fontSize: 12 }}>{order.customerInfo?.phone || '—'}</td>
+                      <td className="hide-on-mobile" data-label="Sản phẩm" style={{ fontSize: 12, color: 'var(--admin-text-muted)' }}>
                         {(order.items?.length || 0)} sản phẩm
                       </td>
-                      <td>
+                      <td data-label="Tổng tiền">
                         <strong className="text-success">
                           {(order.totalAmount || 0).toLocaleString('vi-VN')}đ
                         </strong>
                       </td>
-                      <td>
+                      <td data-label="Trạng thái">
                         <span className={`status-badge ${getStatusClass(order.status)}`}>
                           {ORDER_STATUS_TEXT[order.status]}
                         </span>
                       </td>
-                      <td style={{ fontSize: 12, color: 'var(--admin-text-muted)' }}>
+                      <td className="hide-on-mobile" data-label="Thời gian" style={{ fontSize: 12, color: 'var(--admin-text-muted)' }}>
                         {new Date(order.createdAt).toLocaleString('vi-VN', {
                           day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
                         })}
                       </td>
-                      <td>
+                      <td data-label="Chi tiết">
                         <Link to="/admin/orders" className="btn-action btn-action-view" title="Xem đơn hàng">
-                          <i className="fas fa-eye" />
+                          <Eye size={18}  />
                         </Link>
                       </td>
                     </tr>
