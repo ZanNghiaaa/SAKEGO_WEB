@@ -59,9 +59,13 @@ const normalizeOrder = (order) => ({
 // -------------------------------------------------------
 export const createOrder = async (orderData) => {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout to prevent infinite spinning
+
     const res = await fetch(`${API_URL}/orders`, {
       method: 'POST',
       headers: getAuthHeader(),
+      signal: controller.signal,
       body: JSON.stringify({
         customerInfo: {
           fullname: orderData.fullname,
@@ -80,12 +84,17 @@ export const createOrder = async (orderData) => {
       })
     });
 
+    clearTimeout(timeoutId);
+
     const data = await res.json();
     if (!data.success) throw new Error(data.message || 'Đặt hàng thất bại!');
 
     window.dispatchEvent(new Event('newNotification'));
     return normalizeOrder(data.order);
   } catch (error) {
+    if (error.name === 'AbortError') {
+      throw new Error('Kết nối chậm! Đơn hàng CÓ THỂ đã được tạo thành công. Vui lòng vào "Tài khoản -> Đơn hàng" để kiểm tra trước khi đặt lại để tránh bị trùng đơn!');
+    }
     console.error('Error creating order:', error);
     throw error;
   }
@@ -186,32 +195,24 @@ export const cancelOrder = async (orderId, reason = '') => {
 // -------------------------------------------------------
 // Thống kê đơn hàng (Admin)
 // -------------------------------------------------------
-export const getOrdersStatistics = async (startDate, endDate) => {
+export const getOrdersStatistics = async () => {
   try {
-    let url = `${API_URL}/admin/statistics`;
-    const params = new URLSearchParams();
-    if (startDate) params.append('startDate', startDate);
-    if (endDate) params.append('endDate', endDate);
-    if (params.toString()) {
-      url += `?${params.toString()}`;
-    }
-
-    const res = await fetch(url, {
+    const res = await fetch(`${API_URL}/admin/statistics`, {
       headers: getAuthHeader()
     });
     const data = await res.json();
     if (!data.success) throw new Error('Lỗi thống kê');
     
     // Map dữ liệu từ backend sang format Frontend cần
-    const stats = data.statistics || {};
+    const stats = data.statistics?.orders || {};
     return {
-      total: stats.total || 0,
-      pending: stats.pending || 0,
-      confirmed: stats.confirmed || 0,
-      preparing: stats.preparing || 0,
-      delivering: stats.delivering || 0,
-      completed: stats.completed || 0,
-      cancelled: stats.cancelled || 0,
+      total: stats.totalOrders || 0,
+      pending: stats.pendingOrders || 0,
+      confirmed: stats.confirmedOrders || 0,
+      preparing: stats.preparingOrders || 0,
+      delivering: stats.deliveringOrders || 0,
+      completed: stats.completedOrders || 0,
+      cancelled: stats.cancelledOrders || 0,
       totalRevenue: stats.totalRevenue || 0
     };
   } catch (error) {
