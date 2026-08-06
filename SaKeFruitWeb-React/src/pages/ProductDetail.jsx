@@ -327,7 +327,7 @@ const ProductDetail = () => {
 
                 <h3>Mô tả chi tiết</h3>
                 <p>
-                  {product.name} là sản phẩm được chế biến từ trái sa kê (chôm chôm) tươi ngon, 
+                  {product.name} là sản phẩm được chế biến từ trái sa kê tươi ngon, 
                   chọn lọc kỹ lưỡng từ các vùng trồng sa kê nổi tiếng tại Việt Nam. 
                   Quy trình sản xuất hiện đại, đảm bảo giữ nguyên hương vị tự nhiên 
                   và giá trị dinh dưỡng của trái sa kê.
