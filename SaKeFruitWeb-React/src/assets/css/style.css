@@ -1,4 +1,4 @@
-/* Global styles */
+﻿/* Global styles */
 :root {
     --primary-color: #7CB342;
     --primary-dark: #558B2F;
@@ -826,7 +826,7 @@ section h2::after {
 }
 
 .trial-section::before {
-    content: '🎁';
+    content: 'ðŸŽ';
     position: absolute;
     font-size: 15rem;
     opacity: 0.05;
@@ -2484,7 +2484,7 @@ textarea {
 }
 
 /* ============================================================
-   SAKEGO – CONTACT PAGE REDESIGN  |  Synced Design System
+   SAKEGO â€“ CONTACT PAGE REDESIGN  |  Synced Design System
    ============================================================ */
 @keyframes ch-fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
 @keyframes ch-orbPulse { 0%,100%{transform:scale(1);opacity:.45} 50%{transform:scale(1.2);opacity:.2} }
@@ -2493,7 +2493,7 @@ textarea {
 @keyframes ch-cardIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 @keyframes ch-shimmer { 0%{left:-100%} 100%{left:200%} }
 
-/* ── Contact Hero – Light Premium Split Design ── */
+/* â”€â”€ Contact Hero â€“ Light Premium Split Design â”€â”€ */
 .contact-hero-new {
   position: relative;
   padding: 80px 0 100px;
@@ -2657,30 +2657,13 @@ textarea {
   .contact-cards-grid { grid-template-columns:repeat(2,1fr); }
   .contact-layout { grid-template-columns:1fr; }
   .cfn-row { grid-template-columns:1fr; }
-  .contact-hero-new { padding:130px 16px 90px; background-attachment:scroll; }
+  .contact-hero-new { padding:100px 0 110px;background-attachment:scroll; }
   .contact-hero-title { font-size:36px; }
 }
 @media(max-width:600px){
-  .contact-hero-new { padding: 120px 16px 70px; }
-  .contact-hero-title { font-size: 32px; letter-spacing: -1px; }
-  .contact-hero-desc { font-size: 15px; margin-bottom: 20px; }
-  
-  .contact-hero-pills { gap: 8px; }
-  .ch-pill { padding: 6px 12px; font-size: 11.5px; font-weight: 600; }
-  
-  .contact-cards-grid { grid-template-columns:1fr; gap: 14px; padding: 0 8px; }
-  .contact-info-card { padding: 18px 16px; gap: 14px; border-radius: 16px; }
-  .cic-icon-wrap { width: 44px; height: 44px; font-size: 18px; border-radius: 12px; }
-  .cic-body h3 { font-size: 16px; margin-bottom: 4px; }
-  .cic-body p { font-size: 14px; margin: 0 0 2px; }
-  .cic-sub { font-size: 11px; padding-top: 4px; }
-  
+  .contact-cards-grid { grid-template-columns:1fr; }
   .ch-ring-1,.ch-ring-2 { display:none; }
-  .contact-form-panel { padding:24px 18px; border-radius: 20px; margin: 0 8px; }
-  .cfp-header h2 { font-size: 22px; }
-  .cfp-header p { font-size: 14px; }
-  
-  .contact-sidebar { margin: 0 8px; }
+  .contact-form-panel { padding:24px 18px; }
 }
 
 /* Utility: section-label pill */

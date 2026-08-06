@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    Sakego ADMIN PANEL - LIGHT THEME (matching user pages)
    ============================================================ */
 
@@ -1238,11 +1238,11 @@
 }
 
 /* ============================================================
-   MOBILE (≤ 680px) - FULL PROFESSIONAL MOBILE LAYOUT
+   MOBILE (â‰¤ 680px) - FULL PROFESSIONAL MOBILE LAYOUT
    ============================================================ */
 @media (max-width: 680px) {
 
-  /* ── Sidebar hidden by default, slides in from left ── */
+  /* â”€â”€ Sidebar hidden by default, slides in from left â”€â”€ */
   .admin-sidebar {
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1256,7 +1256,7 @@
     box-shadow: 8px 0 40px rgba(0,0,0,0.35);
   }
 
-  /* ── Dark overlay when sidebar open ── */
+  /* â”€â”€ Dark overlay when sidebar open â”€â”€ */
   .mobile-overlay {
     display: none;
     position: fixed;
@@ -1276,7 +1276,7 @@
     to   { opacity: 1; }
   }
 
-  /* ── Hamburger button (top-left corner) ── */
+  /* â”€â”€ Hamburger button (top-left corner) â”€â”€ */
   .mobile-menu-toggle {
     display: flex !important;
     position: fixed;
@@ -1301,7 +1301,7 @@
     transform: scale(0.93);
   }
 
-  /* ── Main content fills full width with top padding for toggle ── */
+  /* â”€â”€ Main content fills full width with top padding for toggle â”€â”€ */
   .admin-main {
     margin-left: 0 !important;
     padding: 72px 14px 90px 14px;
@@ -1309,34 +1309,34 @@
     min-height: 100vh;
   }
 
-  /* ── Stats grid: 2 columns ── */
+  /* â”€â”€ Stats grid: 2 columns â”€â”€ */
   .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
 
-  /* ── Stat card smaller on phone ── */
+  /* â”€â”€ Stat card smaller on phone â”€â”€ */
   .stat-card { padding: 14px 12px; gap: 10px; }
   .stat-icon { width: 44px; height: 44px; font-size: 18px; border-radius: 12px; }
   .stat-number-animate { font-size: 22px !important; }
   .stat-content p { font-size: 12px; }
   .stat-subtext { font-size: 11px; }
 
-  /* ── Dashboard sections stack vertically ── */
+  /* â”€â”€ Dashboard sections stack vertically â”€â”€ */
   .dashboard-row { grid-template-columns: 1fr; gap: 14px; }
 
-  /* ── Tables: scroll horizontally ── */
+  /* â”€â”€ Tables: scroll horizontally â”€â”€ */
   .admin-table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .admin-table { min-width: 540px; }
 
-  /* ── Header ── */
+  /* â”€â”€ Header â”€â”€ */
   .admin-header { flex-direction: column; align-items: flex-start; gap: 10px; padding: 14px 0 10px; }
   .admin-header h1 { font-size: 20px; margin-left: 52px; }
   .admin-header-subtitle { display: none; }
   .admin-header-actions { align-self: flex-end; }
   .today-date span { font-size: 12px; }
 
-  /* ── Form grid: single column ── */
+  /* â”€â”€ Form grid: single column â”€â”€ */
   .form-grid { grid-template-columns: 1fr; }
 
-  /* ── Modal full screen on mobile ── */
+  /* â”€â”€ Modal full screen on mobile â”€â”€ */
   .modal-content {
     max-height: 92vh;
     border-radius: 20px 20px 0 0;
@@ -1347,18 +1347,18 @@
     align-items: flex-end;
   }
 
-  /* ── Order detail: single column ── */
+  /* â”€â”€ Order detail: single column â”€â”€ */
   .order-detail-grid { grid-template-columns: 1fr; }
 
-  /* ── Toolbar (filters + search) wraps neatly ── */
+  /* â”€â”€ Toolbar (filters + search) wraps neatly â”€â”€ */
   .toolbar { flex-wrap: wrap; gap: 8px; }
   .toolbar .search-box { width: 100%; }
   .filter-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap; padding-bottom: 4px; }
 
-  /* ── Page title smaller ── */
+  /* â”€â”€ Page title smaller â”€â”€ */
   .page-title { font-size: 18px; }
 
-  /* ── Bottom Navigation Bar ── */
+  /* â”€â”€ Bottom Navigation Bar â”€â”€ */
   .admin-bottom-nav {
     display: flex !important;
     position: fixed;

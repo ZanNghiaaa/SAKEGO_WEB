@@ -1,4 +1,4 @@
-/* ===================================
+﻿/* ===================================
    MODERN CART PAGE STYLES
    =================================== */
 
@@ -922,21 +922,21 @@
   }
   
   .cart-item-price::before {
-    content: 'Đơn giá:';
+    content: 'ÄÆ¡n giÃ¡:';
     font-weight: 700;
     color: #718096;
     font-size: 14px;
   }
   
   .cart-item-quantity::before {
-    content: 'Số lượng:';
+    content: 'Sá»‘ lÆ°á»£ng:';
     font-weight: 700;
     color: #718096;
     font-size: 14px;
   }
   
   .cart-item-total::before {
-    content: 'Thành tiền:';
+    content: 'ThÃ nh tiá»n:';
     font-weight: 700;
     color: #718096;
     font-size: 14px;
@@ -1021,14 +1021,14 @@
   }
   
   .cart-item-quantity::before {
-    content: 'Số lượng:';
+    content: 'Sá»‘ lÆ°á»£ng:';
     font-weight: 700;
     color: #718096;
     font-size: 14px;
   }
   
   .cart-item-total::before {
-    content: 'Thành tiền:';
+    content: 'ThÃ nh tiá»n:';
     font-weight: 700;
     color: #718096;
     font-size: 14px;

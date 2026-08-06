@@ -1,11 +1,11 @@
-/* SAKEGO – PRODUCTS PAGE CSS */
+﻿/* SAKEGO â€“ PRODUCTS PAGE CSS */
 @keyframes pk-fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
 @keyframes pk-orbFloat { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-14px) scale(1.04)} }
 @keyframes pk-ringRotate { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
 @keyframes pk-cardIn { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
 @keyframes pk-shimmer { 0%{left:-100%} 100%{left:200%} }
 
-/* ── Products Hero ── */
+/* â”€â”€ Products Hero â”€â”€ */
 .products-hero {
   position: relative;
   padding: 90px 0 110px;

@@ -1,6 +1,6 @@
-/* ===================================
+﻿/* ===================================
    MODERN AUTH PAGE STYLES
-   Trang đăng nhập/đăng ký hiện đại
+   Trang Ä‘Äƒng nháº­p/Ä‘Äƒng kÃ½ hiá»‡n Ä‘áº¡i
    =================================== */
 
 /* Background & Floating Shapes Animation */
@@ -183,10 +183,10 @@
     filter: brightness(1.1) contrast(1.05) drop-shadow(0 15px 30px rgba(0, 0, 0, 0.15));
     animation: bounce 3s infinite ease-in-out;
     margin-bottom: 30px;
-    /* Xóa phông đen - làm trong suốt */
+    /* XÃ³a phÃ´ng Ä‘en - lÃ m trong suá»‘t */
     background: transparent;
     mix-blend-mode: darken;
-    /* Clip path để tạo vùng hiển thị tròn, loại bỏ phông đen */
+    /* Clip path Ä‘á»ƒ táº¡o vÃ¹ng hiá»ƒn thá»‹ trÃ²n, loáº¡i bá» phÃ´ng Ä‘en */
     -webkit-mask-image: radial-gradient(circle, white 45%, transparent 70%);
     mask-image: radial-gradient(circle, white 45%, transparent 70%);
 }
