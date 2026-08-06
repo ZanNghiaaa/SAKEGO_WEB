@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { ShoppingBag, Search, ListOrdered, Loader2, Inbox, AlertCircle, Eye, ArrowRight, X, Receipt } from 'lucide-react';
 import {
   getAllOrders,
   updateOrderStatus,
   ORDER_STATUS,
   ORDER_STATUS_TEXT
 } from '../controllers/OrderController';
-
 const STATUS_CONFIG = {
   pending:    { label: 'Chờ xác nhận', color: '#f97316', icon: 'fa-clock',        badge: 'status-pending' },
   confirmed:  { label: 'Đã xác nhận',  color: '#3b82f6', icon: 'fa-check',        badge: 'status-confirmed' },
@@ -97,7 +97,7 @@ const AdminOrders = () => {
       {/* ── Header ── */}
       <div className="admin-header">
         <div>
-          <h1><i className="fas fa-shopping-bag" /> Quản Lý Đơn Hàng</h1>
+          <h1><ShoppingBag size={18}  /> Quản Lý Đơn Hàng</h1>
           <p className="admin-header-subtitle">
             Quản lý và theo dõi {orders.length} đơn hàng của khách hàng
           </p>
@@ -111,7 +111,7 @@ const AdminOrders = () => {
       </div>
 
       {/* ── Summary mini-cards ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14, marginBottom: 24 }}>
+      <div className="admin-orders-summary-grid">
         {[
           { label: 'Tổng đơn',     value: orders.length,              color: '#3b82f6', icon: 'fa-list' },
           { label: 'Chờ xác nhận', value: countByStatus('pending'),   color: '#f97316', icon: 'fa-clock' },
@@ -140,7 +140,7 @@ const AdminOrders = () => {
 
       {/* ── Filters & Search ── */}
       <div className="admin-filters">
-        <div className="filter-tabs" style={{ flexWrap: 'wrap' }}>
+        <div className="filter-tabs admin-orders-filter-tabs">
           {filterTabs.map(tab => (
             <button
               key={tab.key}
@@ -159,7 +159,7 @@ const AdminOrders = () => {
           ))}
         </div>
         <div className="search-box-admin">
-          <i className="fas fa-search" />
+          <Search size={18}  />
           <input
             type="text"
             placeholder="Tìm tên, SĐT, mã đơn..."
@@ -173,7 +173,7 @@ const AdminOrders = () => {
       <div className="dashboard-card">
         <div className="card-header">
           <h3>
-            <i className="fas fa-list-alt" />
+            <ListOrdered size={18}  />
             {filterStatus === 'all' ? 'Tất cả đơn hàng' : `Đơn ${STATUS_CONFIG[filterStatus]?.label || ''}`}
           </h3>
           <span style={{ fontSize: 13, color: 'var(--admin-text-muted)', fontWeight: 600 }}>
@@ -183,12 +183,12 @@ const AdminOrders = () => {
         <div style={{ padding: 0 }}>
           {loading ? (
             <div style={{ padding: 48, textAlign: 'center', color: 'var(--admin-text-muted)' }}>
-              <i className="fas fa-spinner fa-spin" style={{ fontSize: 32, marginBottom: 12, display: 'block' }} />
+              <Loader2 size={18} style={{ fontSize: 32, marginBottom: 12, display: 'block' }}  className="lucide-spin" />
               Đang tải dữ liệu...
             </div>
           ) : filteredOrders.length === 0 ? (
             <div className="empty-state">
-              <i className="fas fa-inbox" />
+              <Inbox size={18}  />
               <p>Không có đơn hàng nào</p>
             </div>
           ) : (
@@ -214,7 +214,7 @@ const AdminOrders = () => {
                     const isLoading = loadingId === ordId;
                     return (
                       <tr key={ordId}>
-                        <td>
+                        <td data-label="Mã đơn">
                           <span style={{
                             fontFamily: 'monospace', fontSize: 12, fontWeight: 700,
                             color: 'var(--green-500)',
@@ -223,7 +223,7 @@ const AdminOrders = () => {
                             #{String(order.orderNumber || ordId).slice(-6).toUpperCase()}
                           </span>
                         </td>
-                        <td>
+                        <td data-label="Khách hàng">
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                             <div style={{
                               width: 30, height: 30, borderRadius: '50%',
@@ -243,8 +243,8 @@ const AdminOrders = () => {
                             </div>
                           </div>
                         </td>
-                        <td style={{ fontSize: 12, whiteSpace: 'nowrap' }}>{order.customerInfo?.phone || '—'}</td>
-                        <td>
+                        <td data-label="SĐT" className="hide-on-mobile" style={{ fontSize: 12, whiteSpace: 'nowrap' }}>{order.customerInfo?.phone || '—'}</td>
+                        <td data-label="Địa chỉ" className="hide-on-mobile">
                           <div style={{
                             fontSize: 11, color: 'var(--admin-text-muted)',
                             maxWidth: 110, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
@@ -253,7 +253,7 @@ const AdminOrders = () => {
                               .filter(Boolean).join(', ') || '—'}
                           </div>
                         </td>
-                        <td>
+                        <td data-label="Sản phẩm" className="hide-on-mobile">
                           <span style={{
                             background: 'rgba(59,130,246,0.1)', color: '#2563eb',
                             padding: '3px 8px', borderRadius: 6, fontSize: 12, fontWeight: 700
@@ -261,12 +261,12 @@ const AdminOrders = () => {
                             {order.items?.length || 0} món
                           </span>
                         </td>
-                        <td style={{ whiteSpace: 'nowrap' }}>
+                        <td data-label="Tổng tiền" style={{ whiteSpace: 'nowrap' }}>
                           <strong className="text-success" style={{ fontSize: 13 }}>
                             {(order.totalAmount || 0).toLocaleString('vi-VN')}đ
                           </strong>
                         </td>
-                        <td style={{ whiteSpace: 'nowrap' }}>
+                        <td data-label="Thanh toán" className="hide-on-mobile" style={{ whiteSpace: 'nowrap' }}>
                           <span style={{
                             fontSize: 10, fontWeight: 700, textTransform: 'uppercase',
                             color: order.paymentMethod === 'cod' ? '#d97706' : '#2563eb',
@@ -276,29 +276,29 @@ const AdminOrders = () => {
                             {order.paymentMethod === 'cod' ? 'COD' : 'Chuyển khoản'}
                           </span>
                         </td>
-                        <td style={{ whiteSpace: 'nowrap' }}>
+                        <td data-label="Trạng thái" style={{ whiteSpace: 'nowrap' }}>
                           <span className={`status-badge ${getStatusClass(order.status)}`}>
                             {ORDER_STATUS_TEXT[order.status]}
                           </span>
                           {order._updateError && (
                             <div className="inline-error" style={{ marginTop: 6 }}>
-                              <i className="fas fa-exclamation-circle" />
+                              <AlertCircle size={18}  />
                               {order._updateError}
                             </div>
                           )}
                         </td>
-                        <td style={{ fontSize: 11, color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>
+                        <td data-label="Thời gian" className="hide-on-mobile" style={{ fontSize: 11, color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>
                           <div>{new Date(order.createdAt).toLocaleDateString('vi-VN')}</div>
                           <div style={{ fontSize: 10 }}>{new Date(order.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</div>
                         </td>
-                        <td style={{ whiteSpace: 'nowrap' }}>
+                        <td data-label="Hành động" style={{ whiteSpace: 'nowrap' }}>
                           <div className="action-buttons">
                             <button
                               className="btn-action btn-action-view"
                               onClick={() => viewOrderDetail(order)}
                               title="Xem chi tiết"
                             >
-                              <i className="fas fa-eye" />
+                              <Eye size={18}  />
                             </button>
                             {getNextStatus(order.status) && (
                               <button
@@ -313,8 +313,8 @@ const AdminOrders = () => {
                                 disabled={isLoading}
                               >
                                 {isLoading
-                                  ? <i className="fas fa-spinner fa-spin" />
-                                  : <i className="fas fa-arrow-right" />}
+                                  ? <Loader2 size={18}  className="lucide-spin" />
+                                  : <ArrowRight size={18}  />}
                               </button>
                             )}
                             {order.status !== ORDER_STATUS.CANCELLED && order.status !== ORDER_STATUS.COMPLETED && (
@@ -324,7 +324,7 @@ const AdminOrders = () => {
                                 title="Hủy đơn"
                                 disabled={isLoading}
                               >
-                                <i className="fas fa-times" />
+                                <X size={18}  />
                               </button>
                             )}
                           </div>
@@ -345,7 +345,7 @@ const AdminOrders = () => {
           <div className="modal-content" style={{ maxWidth: 720 }} onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h2>
-                <i className="fas fa-receipt" />
+                <Receipt size={18}  />
                 Chi Tiết Đơn Hàng
                 <span style={{
                   fontFamily: 'monospace', fontSize: 14,
@@ -355,7 +355,7 @@ const AdminOrders = () => {
                 </span>
               </h2>
               <button className="modal-close" onClick={closeModal}>
-                <i className="fas fa-times" />
+                <X size={18}  />
               </button>
             </div>
 
@@ -513,7 +513,7 @@ const AdminOrders = () => {
                     closeModal();
                   }}
                 >
-                  <i className="fas fa-arrow-right" />
+                  <ArrowRight size={18}  />
                   → {ORDER_STATUS_TEXT[getNextStatus(selectedOrder.status)]}
                 </button>
               )}
@@ -529,11 +529,11 @@ const AdminOrders = () => {
                     closeModal();
                   }}
                 >
-                  <i className="fas fa-times" /> Hủy đơn
+                  <X size={18}  /> Hủy đơn
                 </button>
               )}
               <button className="btn-secondary" onClick={closeModal}>
-                <i className="fas fa-times" /> Đóng
+                <X size={18}  /> Đóng
               </button>
             </div>
           </div>

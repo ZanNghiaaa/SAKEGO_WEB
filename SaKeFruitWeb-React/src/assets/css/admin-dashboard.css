@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    Sakego ADMIN PANEL - LIGHT THEME (matching user pages)
    ============================================================ */
 
@@ -889,7 +889,8 @@
 
 .search-box-admin { position: relative; min-width: 220px; }
 
-.search-box-admin i {
+.search-box-admin i,
+.search-box-admin svg {
   position: absolute;
   left: 11px;
   top: 50%;
@@ -1617,6 +1618,19 @@
 }
 
 
+
+.admin-orders-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+  .admin-orders-summary-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
 
 /* ============================================================
    ADMIN MOBILE REDESIGN (Card-ify & UI Fixes)
